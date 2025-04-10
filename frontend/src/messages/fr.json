@@ -1,0 +1,16 @@
+{
+  "LoginPage": {
+    "title": "Connexion",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "forgotPassword": "Mot de passe oublié ?",
+    "error": {
+      "required": "{field} est requis.",
+      "invalid": "{field} invalide."
+    }
+  },
+  "LocaleSwitcher": {
+    "switchLanguage": "Changer de langue"
+  }
+}

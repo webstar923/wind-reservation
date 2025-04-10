@@ -1,0 +1,16 @@
+{
+  "LoginPage": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Log In",
+    "forgotPassword": "Forgot your password?",
+    "error": {
+      "required": "{field} is required.",
+      "invalid": "Invalid {field}."
+    }
+  },
+  "LocaleSwitcher": {
+    "switchLanguage": "Switch Language"
+  }
+}
