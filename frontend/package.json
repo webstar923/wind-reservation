@@ -2,7 +2,7 @@
   "name": "full_value_app",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+  "scripts": { 
     "dev": "concurrently \"next dev\"  \"cd ../backend && npm run dev\"",
     "build": "next build",
     "start": "concurrently \"next start -p 8000\"  \"cd ../backend && npm run start\"",
