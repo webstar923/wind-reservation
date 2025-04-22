@@ -4,7 +4,7 @@ const {
         updateReservation, getChangeableDate, createReservation,
         getReservations,getReservationListData,deleteReservation
         ,getDashboardData,getAvailableDate,getAllReservationData,
-        getFutureReservationData,getChatHistoryByid
+        getFutureReservationData,getChatHistoryByid,getSettingData
      } = require('../controllers/reservationController');
 
 const router = express.Router();
@@ -27,5 +27,6 @@ router.get('/getDashboardData',getDashboardData);
 router.get('/getAllReservationData',getAllReservationData);
 router.get('/getFutureReservationData',getFutureReservationData);
 router.post('/getChatHistoryByid',getChatHistoryByid);
+router.get('/getSettingData',getSettingData);
 
 module.exports = router;

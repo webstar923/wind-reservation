@@ -112,9 +112,9 @@ const Notification = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-fullbg-[#1b2635] text-white rounded-lg overflow-hidden">
+            <table className="w-full bg-[#1b2635] text-white rounded-lg overflow-hidden p-3">
               <thead>
-                <tr className="bg-gray-700">
+                <tr className="bg-[#667486]">
                   {["番号", "状態", "時間", "メッセージ", "チェック"].map((column) => (
                     <th
                       key={column}
@@ -133,7 +133,7 @@ const Notification = () => {
               </thead>
               <tbody>
                 {currentNotifications.map((notification, index) => (
-                  <tr key={notification.id} className={`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-750"} hover:bg-gray-700`}>
+                  <tr key={notification.id} className={`${index % 2 === 0 ? "bg-[#2a3a53] p-3" : "bg-[#2a364d] p-3"} hover:bg-[#444e5c]`}>
                     <td className="px-6 py-3 whitespace-nowrap">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                     <td className="px-6 py-3 whitespace-nowrap"><BellIcon /></td>
                     <td className="px-6 py-3 whitespace-nowrap">

@@ -38,9 +38,10 @@ interface Event {
 
 const Chat = () => {
   const [selectedOptions, setSelectedOptions] = useState<Set<string>>(new Set());
-
+  const { checkDate } = useDashboard();
   const messageEndRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState('');
+  const [checkDataResult, setCheckDataResult] = useState(false);
   const typingDelay = 25;
   const calendarRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,8 +86,10 @@ const Chat = () => {
 
     return givenDate > today;
   }
-  const handleDateClick = (info: DateClickArg) => {
-    console.log(info.dateStr)
+  const handleDateClick = async (info: DateClickArg) => {
+    console.log(info.dateStr,"-------------")
+    const checkResult = await checkDate(info.dateStr);
+    setCheckDataResult(checkResult.status)
     setSelectedDate(info.dateStr);
     setIsModalOpen(true);
   };
@@ -509,10 +512,10 @@ const Chat = () => {
         <div className="flex inset-0 items-center justify-center">
           <div className="bg-white p-6 rounded-[10px] shadow-lg w-full">
             <h2 className="text-xl font-bold mb-4">{isFutureDate(selectedtDate) ? selectedtDate + "日に予約をしたいですか？" : "その日の予約はできません。"}</h2>
-            <p className="mb-6">{isFutureDate(selectedtDate) ? "この日を希望する場合は、会社の予約状況を確認し、空いている時間をお知らせできます。" : "将来の日付のみ選択してください。予約は必ず前日までに行う必要があり、当日の予約はできません。"}</p>
+            <p className="mb-6">{isFutureDate(selectedtDate) ? checkDataResult ? "この日を希望する場合は、会社の予約状況を確認し、空いている時間をお知らせできます。":"申し訳ありません。その日はすでに予約が埋まっています。別の日を選択してください。" : "将来の日付のみ選択してください。予約は必ず前日までに行う必要があり、当日の予約はできません。"}</p>
             <div className="flex justify-end mt-4 space-x-2">
               <button
-                onClick={isFutureDate(selectedtDate) ? selectDate : handleCloseModal}  // This will trigger the deletion action
+                onClick={isFutureDate(selectedtDate) && checkDataResult ? selectDate : handleCloseModal}  // This will trigger the deletion action
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
               >
                 はい

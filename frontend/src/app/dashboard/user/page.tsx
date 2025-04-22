@@ -224,10 +224,10 @@ const DashboardPage = () => {
           </div>
 
           <div className="overflow-x-auto ">
-            <table className="w-full #bg-[#233044] text-white rounded-lg overflow-hidden p-3">
+            <table className="w-full bg-[#233044] text-white rounded-lg overflow-hidden p-3">
               <thead>
                 <tr className="bg-[#667486]">
-                  {["番号", "ユーザID", "名前", "メール", "電話番号", "住所", "許可状態", "役割"].map((column) => (
+                  {["番号", "ユーザID", "名前", "メール",  "許可状態", "役割"].map((column) => (
                     <th
                       key={column}
                       className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider cursor-pointer"
@@ -252,8 +252,8 @@ const DashboardPage = () => {
                     <td className="pl-4 py-3 whitespace-nowrap">{user.id}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{user.name}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{user.email}</td>
-                    <td className="pl-4 py-3 whitespace-nowrap">{user.phoneNum}</td>
-                    <td className="pl-4 py-3 whitespace-nowrap">{user.address}</td>
+                    {/* <td className="pl-4 py-3 whitespace-nowrap">{user.phoneNum}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{user.address}</td> */}
                     <td className="pl-4 py-3 whitespace-nowrap">{user.permissionStatus === "inpermission" ? "不許可" : "許可"}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{user.role.includes("user") ? "ユーザー" : user.role.includes("member") ? "メンバー" : "マネージャー"}</td>
                     <td className="pl-4 py-3 whitespace-nowrap flex gap-3">

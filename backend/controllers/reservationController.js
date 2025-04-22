@@ -4,6 +4,8 @@ const Work = require('../models/Work');
 const Reservation = require('../models/Reservation');
 const User = require('../models/User');
 const ChatHistory = require('../models/ChatHistory');
+const Setting = require('../models/Setting');
+
 const logger = require('../logger');
 
 // Find Flat by partial match on the name
@@ -301,7 +303,7 @@ const createReservation = async (req, res) => {
       const formattedHistory = history.map(item => `${item.key}: ${item.value}`).join("\n");
       const newReservatoin = await Reservation.create({customer_name,customer_address,customer_phoneNum,start_time:start_time,end_time:start_time});
       const newHistory = await ChatHistory.create({reservation_id:newReservatoin.id, history:formattedHistory});
-      logger.logInfo(customer_name+'ユーザーによって新しい予約が登録されました。', req.id, req.originalUrl, req.method, res.statusCode, req.user?req.user.id : null, req.ip);
+      logger.logImportantInfo(customer_name+'ユーザーによって新しい予約が登録されました。予約番号は'+newReservatoin.id+'です。', req.id, req.originalUrl, req.method, res.statusCode, req.user?req.user.id : null, req.ip);
       res.status(201).json(newReservatoin);
 
 
@@ -538,11 +540,23 @@ const getChatHistoryByid = async (req, res) => {
     res.status(500).json({ message: 'サーバーエラー' });
   }
 };
+const getSettingData = async (req, res) => {
+  try {
+    const settingData = await Setting.findAll();
+    const dataValues = settingData.map(data => data.dataValues);
+    res.status(200).json(dataValues);
+   
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'サーバーエラー' });
+  }
+};
 module.exports = { 
   findFlat, findWork, findReservation, findChangeDate, 
   updateReservation,  getChangeableDate, createReservation,
    getReservations,getReservationListData,deleteReservation, 
    getDashboardData,   getAllReservationData, getAvailableDate,
-   getFutureReservationData,getChatHistoryByid
+   getFutureReservationData,getChatHistoryByid,getSettingData
   
   };

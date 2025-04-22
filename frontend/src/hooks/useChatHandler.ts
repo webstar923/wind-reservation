@@ -23,7 +23,7 @@ export const useChatHandler = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-        });;
+        });
         const flows = await res.json();      
         const mapped = flows.data.reduce((acc: any, flow: any) => {
           acc[flow.key] = {
@@ -179,8 +179,7 @@ export const useChatHandler = () => {
           addMessage(reservationConfirm);
 
       }else{
-        console.log(requirement,date);
-
+               
         const res = await fetch('/api/reservation/createReservation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
@@ -208,8 +207,6 @@ export const useChatHandler = () => {
           body: JSON.stringify(reservationData)
         });
         const data = await res.json();
-        console.log("data:::::",data);
-        
         if (data.length >0) {
           const id = data[0].id;          
           setChatHistory((prevHistory) => [...prevHistory, { key: "reservationId", value:id }]);

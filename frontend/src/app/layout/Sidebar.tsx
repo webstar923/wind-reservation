@@ -55,8 +55,8 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { path: '/dashboard/company', Icon: BuildingIcon, label: '工事会社管理', authority: ['manager'] },
-    { path: '/dashboard/member', Icon: MemberIcon, label: '工事職員管理', authority: ['manager'] },
+    { path: '/dashboard/company', Icon: BuildingIcon, label: '予約管理', authority: ['manager'] },
+    { path: '/dashboard/member', Icon: MemberIcon, label: '工事会社管理', authority: ['manager'] },
     { path: '/dashboard/user', Icon: UserIcon, label: 'ユーザー管理', authority: ['manager'] },
     { path: '/dashboard/api_history', Icon: ApiIcon, label: 'APIログ', authority: ['manager'] },
     { path: '/dashboard/member_reservation/check', Icon: CheckIcon, label: '予約確認', authority: ['member'] },
@@ -125,6 +125,19 @@ const Sidebar = () => {
             </li>
             <li
               key={`${path}-company4`}
+              className={`w-full text-white mt-0 ${pathname === "/dashboard/company/setting" ? 'bg-[#1e293a] text-white' : ''} 
+              ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
+              style={{ marginTop: "0px" }}
+              onClick={(e) => linkOnclick(e, "/dashboard/company/setting")}
+            >
+              <div className="flex">
+                <span className={`text-[15px] ${isSubActive && "m-0"} ${(isSidebarOpen || isMobile) ? "ml-9" : "ml-3"}`}>
+                  {(isSidebarOpen || isMobile) ? "予約設定" : "設定"}
+                </span>
+              </div>
+            </li>
+            <li
+              key={`${path}-company5`}
               className={`w-full text-white mt-0 ${pathname === "/dashboard/company/chat" ? 'bg-[#1e293a] text-white' : ''} 
               ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
               style={{ marginTop: "0px" }}
@@ -135,6 +148,7 @@ const Sidebar = () => {
                 </span>
               </div>
             </li>
+            
           </>
         )}
         {path === "/dashboard/member" && pathname.startsWith("/dashboard/member") && (
@@ -165,6 +179,7 @@ const Sidebar = () => {
                 </span>
               </div>
             </li>
+            
           </>
         )}
       </>

@@ -8,6 +8,8 @@ const userRoutes = require('./routes/userRoutes');
 const logRoutes = require('./routes/logRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const settingRoutes = require('./routes/settingRoutes');
+
 require('dotenv').config();
 
 const PORT = process.env.PORT || 5001;
@@ -102,6 +104,8 @@ app.use('/api/user', authenticate, userRoutes);
 app.use('/api/log',  authenticate, logRoutes);
 app.use('/api/alert',authenticate, alertRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/setting',settingRoutes);
+
 
 sequelize.sync()
   .then(() => {

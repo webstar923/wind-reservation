@@ -1,4 +1,5 @@
-const { Alert, AlertReadStatus } = require('../models/Alert');
+const { Alert, AlertReadStatus, } = require('../models/Alert');
+const Log = require('../models/Log');
 const { Op } = require('sequelize'); // Import the Op operator from Sequelize
 // Get all alerts with read status for a specific user
 const getAlerts = async (req, res) => {
@@ -111,6 +112,7 @@ const markAsRead = async (req, res) => {
     const { id } = req.params;
     const userId = req.user?.id; // Assuming user info is available in req.user
     // Find or create read status record
+    const [updated] = await Log.update({readStatus:"read"}, { where: { id } });
     const [readStatus, created] = await AlertReadStatus.findOrCreate({
       where: {
         alert_id: id,

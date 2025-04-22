@@ -308,7 +308,62 @@ export const useDashboard = () => {
           throw error;
         }
       };
-      
+      const getSettingData = async () => {
+        try {
+          const response = await fetch('/api/setting/getSettingData', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch chat history');
+          }          
+          return await response.json();
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Error fetching chat history';
+          console.error(errorMessage);
+          throw error;
+        }
+      };
+      const setReservationNumPerDay = async (val:number) => {
+        try {
+          const response = await fetch('/api/setting/setReservationNumPerDay', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ val }), 
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch chat history');
+          }          
+          return await response.json();
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Error fetching chat history';
+          console.error(errorMessage);
+          throw error;
+        }
+      };
+      const checkDate = async (date:string) => {
+        try {
+          const response = await fetch('/api/setting/checkDate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ date }), 
+          });          
+                    
+          return await response.json();
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Error checking date';
+          console.error(errorMessage);
+          throw error;
+        }
+      };
   return {   
     getUserData,
     changeUser,
@@ -344,7 +399,11 @@ export const useDashboard = () => {
 
     getAllReservationData,
     getFutureReservationData,
-    getChatHistory
+    getChatHistory,
+
+    getSettingData,
+    setReservationNumPerDay,
+    checkDate
 
   };
 };
