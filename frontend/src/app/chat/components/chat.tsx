@@ -87,7 +87,6 @@ const Chat = () => {
     return givenDate > today;
   }
   const handleDateClick = async (info: DateClickArg) => {
-    console.log(info.dateStr,"-------------")
     const checkResult = await checkDate(info.dateStr);
     setCheckDataResult(checkResult.status)
     setSelectedDate(info.dateStr);

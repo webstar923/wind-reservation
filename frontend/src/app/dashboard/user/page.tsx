@@ -134,8 +134,6 @@ const DashboardPage = () => {
       permissionStatus: permission,
       role: role
     };
-    console.log(updatedUserData);
-
     try {
       await changeUser(updatedUserData);
       setUsers(prevUsers =>

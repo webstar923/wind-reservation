@@ -31,7 +31,6 @@ const Message = () => {
       try {
         const data = await getMessages();
         setMessages(data.unreadAlerts);
-        console.log(data.unreadAlerts)
       } catch (error) {
         console.error("Error fetching data", error);
       }

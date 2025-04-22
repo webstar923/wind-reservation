@@ -42,8 +42,6 @@ const MemberViewPage = () => {
       try {
         const data = await getMemberData();
         setUsers(data);
-        console.log(data);
-
       } catch (error) {
         console.error("Error fetching data", error);
       }

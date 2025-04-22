@@ -47,10 +47,7 @@ const ResetPassword = () => {
       setErrors(validationErrors);
       return;
     }
-
     const resetData = { email, password };
-    console.log(resetData);
-
     mutate(resetData, {
       onSuccess: () => {
         router.push('/auth/login');

@@ -43,10 +43,7 @@ const ReservationSettingPage = () => {
     const fetchData = async () => {
       try {
         const data = await getSettingData();
-        console.log(data[0].T_number);
-        
         setReservation_number(data[0].T_number);       
-
       } catch (error) {
         console.error("Error fetching data", error);
       }

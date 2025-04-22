@@ -77,18 +77,13 @@ const ReservationManagementPage = () => {
       const [key, value = ""] = line.split(": ");
       return { key: key.replace("<br/>", ""), value };
     });
-    console.log(chatHistoryArray);
-
     setChatHistories(chatHistoryArray);
-
     setModalOpen(true);
   };
   const handleDatesSet = async ({ start, end }: { start: Date; end: Date }) => {
     const startDate = start.toISOString();
     const endDate = end.toISOString();
     const data = await getReservationListData(startDate, endDate);
-    console.log(data);
-
     changeData(data);
   };
   const changeData = (data: Event[]) => {

@@ -128,8 +128,6 @@ const ReservationManagementPage = () => {
     const startDate = start.toISOString();
     const endDate = end.toISOString();
     const data = await getReservationListData(startDate, endDate);
-    console.log(data);
-
     changeData(data);
   };
   const changeData = (data: Event[]) => {
