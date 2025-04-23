@@ -244,10 +244,10 @@ const AlertManagementPage = () => {
               aria-describedby="edit-message-description"
               className='flex justify-center items-center'
             >
-              <div className="modal-content p-4 bg-white w-[40%] rounded-lg">
+              <div className="modal-content p-4 bg-[#FFFFFF] w-[40%] rounded-lg">
                 {selectedMessage && (
                   <div className="flex inset-0 items-center justify-center bg-opacity-50">
-                    <div className="bg-white p-6 rounded-[10px] w-full">
+                    <div className="bg-[#FFFFFF] p-6 rounded-[10px] w-full">
                       <h2 className="text-xl font-bold mb-4">通知編集</h2>
                       <div className="space-y-4">                 
                         <TextField

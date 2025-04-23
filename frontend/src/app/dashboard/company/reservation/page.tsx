@@ -199,7 +199,7 @@ const ReservationManagementPage = () => {
               <Link href={"/dashboard/company/reservation"}><p className='text-[18px] text-[#407AD6] mx-2'>予約管理</p> </Link>/<Link href={"/dashboard/company/reservation/history"}><p className='text-[18px]  mx-2'>過去の予約履歴</p> </Link>
             </div>
           </div>
-          <div className="bg-white p-5 shadow-lg rounded-lg">
+          <div className="bg-[#FFFFFF] p-5 shadow-lg rounded-lg">
             <FullCalendar
               ref={calendarRef}
               plugins={[dayGridPlugin, timeGridPlugin]}
@@ -227,10 +227,10 @@ const ReservationManagementPage = () => {
               aria-describedby="edit-reservation-description"
               className='flex justify-center items-center'
             >
-              <div className="modal-content p-4 bg-white w-[40%] rounded-lg">
+              <div className="modal-content p-4 bg-[#FFFFFF] w-[40%] rounded-lg">
                 {selectedEvent && (
                   <div className="flex inset-0 items-center justify-center  bg-opacity-50">
-                    <div className="bg-white p-6 rounded-[10px] w-full">
+                    <div className="bg-[#FFFFFF] p-6 rounded-[10px] w-full">
                       <h2 className="text-xl font-bold mb-4">予約編集</h2>
                       <div className="space-y-4">
                         <TextField

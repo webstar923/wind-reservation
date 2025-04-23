@@ -279,7 +279,7 @@ const DashboardPage = () => {
         <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
           {modalContent?.type === 'edit' && (
             <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-6 rounded-[10px] shadow-lg w-full">
+              <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
                 <h2 className="text-xl font-bold mb-4">情報編集</h2>
                 <div className="space-y-4">
                   <input
@@ -358,7 +358,7 @@ const DashboardPage = () => {
           )}
           {modalContent?.type === 'create' && (
             <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-6 rounded-[10px] shadow-lg w-full">
+              <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
                 <h2 className="text-xl font-bold mb-4">新規ユーザー</h2>
                 <div className="space-y-4">
                   <input
@@ -444,7 +444,7 @@ const DashboardPage = () => {
           )}
           {modalContent?.type === 'delete' && (
             <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white p-6 rounded-[10px] shadow-lg w-full">
+              <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
                 <h2 className="text-xl font-bold mb-4">資料を削除しますか?</h2>
                 <p className="mb-6">この操作は取り消せません。削除を確認してください。</p>
                 <div className="flex justify-end mt-4 space-x-2">

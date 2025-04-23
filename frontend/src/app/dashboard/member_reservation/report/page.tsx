@@ -194,7 +194,7 @@ const ReportPage = () => {
             {modalContent && (
               <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
                 <div className="flex inset-0 items-center justify-center">
-                  <div className="bg-white p-6 rounded-[10px] shadow-lg w-full">
+                  <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
                     <h2 className="text-xl font-bold mb-4">予約報告</h2>
                     <p className="mb-6">予約番号{reportId}の予約進行定形をご記入ください。</p>
                     <TextField

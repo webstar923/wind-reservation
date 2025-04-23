@@ -158,7 +158,7 @@ const Chat = () => {
               <div className="flex flex-col sm:flex-row w-fit gap-3 flex-wrap mt-[10px]">
                 {message.options && message.options.map((option: { label: string; nextKey: string }, idx: number) => (
                   <div key={idx}
-                    className={`felx justify-center items-center border border-[#c8ceed] px-[20px] py-[10px] rounded-[5px] hover:border-[#0a1551] text-[#6C73A8] hover:bg-[#dadef3] cursor-pointer ${selectedOptions.has(option["label"] + index) ? "bg-[#0f1430] text-white" : "bg-white"}`}
+                    className={`felx justify-center items-center border border-[#c8ceed] px-[20px] py-[10px] rounded-[5px] hover:border-[#0a1551] text-[#6C73A8] hover:bg-[#dadef3] cursor-pointer ${selectedOptions.has(option["label"] + index) ? "bg-[#0f1430] text-white" : "bg-[#FFFFFF]"}`}
                     onClick={() => { handleOptionClick(option["label"], option["nextKey"], index); }}
                   >
                     <p className="font-normal leading-[28px]  text-[15px] break-all text-center">{option["label"]}</p>
@@ -166,7 +166,7 @@ const Chat = () => {
                 ))}
                 {index + 1 === messages.length && messages.length !== 1 &&
                   <div
-                    className={`border border-[#f88888] ml-10 px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4141] text-[#ff3333] hover:bg-[#ffeaea] cursor-pointer bg-white1`}
+                    className={`border border-[#f88888] ml-10 px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4141] text-[#ff3333] hover:bg-[#ffeaea] cursor-pointer bg-[#FFFFFF]1`}
                     onClick={() => backBtn()}
                   >
                     <p className="font-normal leading-[28px]  text-[15px] break-all text-center">戻る</p>
@@ -183,14 +183,14 @@ const Chat = () => {
                   placeholder="ここに入力してください..."
                 />
                 <div
-                  className={`border border-[#c8ceed] px-[20px] py-[10px] rounded-[5px] hover:border-[#0a1551] text-[#6C73A8] hover:bg-[#dadef3] cursor-pointer bg-white1`}
+                  className={`border border-[#c8ceed] px-[20px] py-[10px] rounded-[5px] hover:border-[#0a1551] text-[#6C73A8] hover:bg-[#dadef3] cursor-pointer bg-[#FFFFFF]1`}
                   onClick={() => { handleKeyDown(message.options[0]) }}
                 >
                   <p className="font-normal leading-[28px]  text-[15px] break-all text-center">確認</p>
                 </div>
                 {index + 1 === messages.length && messages.length !== 1 &&
                   <div
-                    className={`border border-[#f88888] ml-1 px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4c4c] text-[#ff3333] hover:bg-[#f7dbdb] cursor-pointer bg-white1`}
+                    className={`border border-[#f88888] ml-1 px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4c4c] text-[#ff3333] hover:bg-[#f7dbdb] cursor-pointer bg-[#FFFFFF]1`}
                     onClick={() => backBtn()}
                   >
                     <p className="font-normal leading-[28px]  text-[15px] break-all text-center">戻る</p>
@@ -269,7 +269,7 @@ const Chat = () => {
                 </div>
                 {index + 1 === messages.length && messages.length !== 1 &&
                   <div
-                    className={`border mt-5 w-fit border-[#f88888] px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4c4c] text-[#ff3333] hover:bg-[#f7dbdb] cursor-pointer bg-white1`}
+                    className={`border mt-5 w-fit border-[#f88888] px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4c4c] text-[#ff3333] hover:bg-[#f7dbdb] cursor-pointer bg-[#FFFFFF]1`}
                     onClick={() => backBtn()}
                   >
                     <p className="font-normal leading-[28px]  text-[15px] break-all text-center">戻る</p>
@@ -287,7 +287,7 @@ const Chat = () => {
                       : "shadow-[1px_2px_20px_0px_rgba(0,0,0,0.4)]"
                   )}
                 >
-                  <div className="hidden sm:block absolute inset-0 bg-white/70"></div>
+                  <div className="hidden sm:block absolute inset-0 bg-[#FFFFFF]/70"></div>
                   <div className="flex gap-5 relative">
                     <div className="flex flex-col items-center justify-center">
                       <div className="flex justify-center items-center">
@@ -328,7 +328,7 @@ const Chat = () => {
                       : "shadow-[1px_2px_20px_0px_rgba(0,0,0,0.4)]"
                   )}
                 >
-                  <div className="absolute inset-0 bg-white/70"></div>
+                  <div className="absolute inset-0 bg-[#FFFFFF]/70"></div>
                   <p className="font-semibold text-[20px] leading-[25.5px] text-[#091428] opacity-100 relative">
                     予約番号：{message.options.id}
                   </p>
@@ -372,7 +372,7 @@ const Chat = () => {
                       : "shadow-[1px_2px_20px_0px_rgba(0,0,0,0.4)]"
                   )}
                 >
-                  <div className="absolute inset-0 bg-white/70"></div>
+                  <div className="absolute inset-0 bg-[#FFFFFF]/70"></div>
                   <div className="flex gap-5 relative">
                     <div className="flex flex-col items-center justify-center">
                       {
@@ -425,7 +425,7 @@ const Chat = () => {
                       : "shadow-[1px_2px_20px_0px_rgba(0,0,0,0.4)]"
                   )}
                 >
-                  <div className="absolute inset-0 bg-amber-100 sm:bg-white/70"></div>
+                  <div className="absolute inset-0 bg-amber-100 sm:bg-[#FFFFFF]/70"></div>
                   <div className="flex gap-5 relative">
                     <div className="flex flex-col items-center justify-center">
                       {
@@ -486,7 +486,7 @@ const Chat = () => {
                     {
                       message.options.map((option: Option, idx: number) => {
                         return (
-                          <tr key={idx} className="hover:bg-gray-100 even:bg-gray-50 odd:bg-white">
+                          <tr key={idx} className="hover:bg-gray-100 even:bg-gray-50 odd:bg-[#FFFFFF]">
                             <td className="px-4 py-3 border-b border-gray-300">{option.id}</td>
                             <td className="px-4 py-3 border-b border-gray-300">{option.flat_name}</td>
                             <td className="px-4 py-3 border-b border-gray-300">{option.room_num}</td>
@@ -510,7 +510,7 @@ const Chat = () => {
       ))}
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <div className="flex inset-0 items-center justify-center">
-          <div className="bg-white p-6 rounded-[10px] shadow-lg w-full">
+          <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
             <h2 className="text-xl font-bold mb-4">{isFutureDate(selectedtDate) ? selectedtDate + "日に予約をしたいですか？" : "その日の予約はできません。"}</h2>
             <p className="mb-6">{isFutureDate(selectedtDate) ? checkDataResult ? "この日を希望する場合は、会社の予約状況を確認し、空いている時間をお知らせできます。":"申し訳ありません。その日はすでに予約が埋まっています。別の日を選択してください。" : "将来の日付のみ選択してください。予約は必ず前日までに行う必要があり、当日の予約はできません。"}</p>
             <div className="flex justify-end mt-4 space-x-2">

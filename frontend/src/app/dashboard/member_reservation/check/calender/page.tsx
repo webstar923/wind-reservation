@@ -130,7 +130,7 @@ const ReservationManagementPage = () => {
               <Link href="/dashboard/member_reservation/check/calender" className='text-[#407AD6] mr-2'>カレンダー形式で表示</Link> / <Link href="/dashboard/member_reservation/check" className='hover:text-[#407AD6] ml-2'>リスト形式で表示</Link>
             </div>
           </div>
-          <div className="bg-white p-5 shadow-lg rounded-lg">
+          <div className="bg-[#FFFFFF] p-5 shadow-lg rounded-lg">
             <FullCalendar
               ref={calendarRef}
               plugins={[dayGridPlugin, timeGridPlugin]}

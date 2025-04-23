@@ -50,7 +50,7 @@ const Login = () => {
 
   return (
     <AuthLayout>
-      <div className="mt-[100px] w-[70%]">
+      <div className="w-[70%] flex flex-col justify-center">
         <div className="flex justify-center items-center">
           <Image src="/assets/images/auth/logo.png" alt="logo" width={70} height={70}  priority />
           <p className="font-bold text-[70px] text-[#005596]"><span className="text-[#e6494f] text-[60px]">in</span>g</p>
@@ -68,8 +68,8 @@ const Login = () => {
             </div>
           </div>
           <div className="flex justify-between p-5">
-            <Link href="/auth/register" className="flex justify-between mt-35 rounded-lg bg-white p-5 shadow-sm">
-              <h4 className="text-black-600 hover:text-blue-800">サインアップ</h4>
+            <Link href="/auth/register" className="flex justify-between mt-35 rounded-lg bg-[#9e9c9c] p-5 shadow-sm hover:bg-[#66666544]">
+              <h4 className="text-[#FFFFFF] hover:text-blue-800">サインアップ</h4>
             </Link>
             <CustomButton type="submit" isLoading={isLoading} label="ログイン" className="hover:opacity-80" />
           </div>

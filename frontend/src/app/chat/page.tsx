@@ -17,7 +17,7 @@ const Chat = () => {
         </div>
       </div>
       <div className="flex flex-col flex-grow inset-0 bg-[url('/assets/images/download.webp')] bg-cover bg-no-repeat justify-center items-center mt-10">
-        <div className="flex bg-white  sm:rounded-[20px] py-5 pl-5 pr-0 sm:p-5 relative gap-5 h-[100vh] sm:w-[80vw] sm:h-[80vh] overflow-y-auto custom-scrollbar">
+        <div className="flex bg-[#FFFFFF]  sm:rounded-[20px] py-5 pl-5 pr-0 sm:p-5 relative gap-5 h-[100vh] sm:w-[80vw] sm:h-[80vh] overflow-y-auto custom-scrollbar">
           <ChatContainer />
         </div>
       </div>

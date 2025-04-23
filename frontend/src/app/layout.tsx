@@ -36,7 +36,7 @@ export default function LocaleLayout({
               hideProgressBar={false}
               closeOnClick
               pauseOnHover
-              className="text-white"
+              className="text-[#FFFFFF]"
               draggable
             />
           </ClientQueryClientProvider>
