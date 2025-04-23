@@ -68,8 +68,8 @@ const Login = () => {
             </div>
           </div>
           <div className="flex justify-between p-5">
-            <Link href="/auth/register" className="flex justify-between mt-35 rounded-lg bg-[#9e9c9c] p-5 shadow-sm hover:bg-[#66666544]">
-              <h4 className="text-[#FFFFFF] hover:text-blue-800">サインアップ</h4>
+            <Link href="/auth/register" className="flex justify-between mt-35 rounded-lg bg-[#943637] p-5  hover:bg-[#c75355] shadow-[0px_4px_14px_0px_#00000040]">
+              <h4 className="text-[#FFFFFF]">サインアップ</h4>
             </Link>
             <CustomButton type="submit" isLoading={isLoading} label="ログイン" className="hover:opacity-80" />
           </div>
