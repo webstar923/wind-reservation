@@ -119,16 +119,11 @@ export const useDashboard = () => {
   };
 
   // Other Methods (Create/Update/Delete)
-  const createFlat = async (body: any) => fetchData('/api/flat/createFlat', { method: 'POST', body: JSON.stringify(body) });
-  const createWork = async (body: any) => fetchData('/api/work/createWork', { method: 'POST', body: JSON.stringify(body) });
+  
   const createUser = async (body: any) => fetchData('/api/user/createUser', { method: 'POST', body: JSON.stringify(body) });
 
-  const changeFlat = async (body: any) => fetchData('/api/flat/changeFlat', { method: 'POST', body: JSON.stringify(body) });
-  const changeWork = async (body: any) => fetchData('/api/work/changeWork', { method: 'POST', body: JSON.stringify(body) });
   const changeUser = async (body: any) => fetchData('/api/user/changeUser', { method: 'POST', body: JSON.stringify(body) });
 
-  const deleteFlat = async (id: number) => fetchData('/api/flat/deleteFlat', { method: 'POST', body: JSON.stringify({ id }) });
-  const deleteWork = async (id: number) => fetchData('/api/work/deleteWork', { method: 'POST', body: JSON.stringify({ id }) });
   const deleteUser = async (id: number) => fetchData('/api/user/deleteUser', { method: 'POST', body: JSON.stringify({ id }) });
   const deleteReservation = async (id: number) => fetchData('/api/reservation/deleteReservation', { method: 'POST', body: JSON.stringify({ id }) });
   const createReservation = async (body: any) => fetchData('/api/reservation/createReservation', { method: 'POST', body: JSON.stringify(body) });
@@ -364,6 +359,21 @@ export const useDashboard = () => {
           throw error;
         }
       };
+
+      const getAllCompanies = async () => fetchData('/api/company', {
+        method: 'GET',
+      });
+      const createCompany = async (body: any) => fetchData('/api/company', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      const updateCompany = async (id: number, body: any) => fetchData(`/api/company?id=${id}`, {
+        method: 'PUT', 
+        body: JSON.stringify(body),
+      });
+      const deleteCompany = async (id: number) => fetchData(`/api/company?id=${id}`, {
+        method: 'DELETE',
+      });
   return {   
     getUserData,
     changeUser,
@@ -403,7 +413,12 @@ export const useDashboard = () => {
 
     getSettingData,
     setReservationNumPerDay,
-    checkDate
+    checkDate,
+
+    getAllCompanies,
+    createCompany,
+    updateCompany,
+    deleteCompany
 
   };
 };

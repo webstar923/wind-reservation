@@ -2,13 +2,13 @@ const express = require('express');
 const sequelize = require('./config');
 const authRoutes = require('./routes/authRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
-const flatRoutes = require('./routes/flatRoutes');
-const workRoutes = require('./routes/workRoutes');
 const userRoutes = require('./routes/userRoutes');
 const logRoutes = require('./routes/logRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const settingRoutes = require('./routes/settingRoutes');
+const companyRoutes = require('./routes/companyRoutes');
+
 
 require('dotenv').config();
 
@@ -98,13 +98,12 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/reservation',reservationRoutes);
-app.use('/api/flat',flatRoutes);
-app.use('/api/work',workRoutes);
 app.use('/api/user', authenticate, userRoutes);
 app.use('/api/log',  authenticate, logRoutes);
 app.use('/api/alert',authenticate, alertRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/setting',settingRoutes);
+app.use('/api/company',authenticate,companyRoutes);
 
 
 sequelize.sync()

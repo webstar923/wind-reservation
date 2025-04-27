@@ -108,7 +108,7 @@ const Message = () => {
             <input
               type="text"
               placeholder="検索メッセージ..."
-              className="w-full px-4 py-2bg-[#1b2635] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-[#667486] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={searchTerm}
               onChange={handleSearch}
             />
@@ -116,7 +116,7 @@ const Message = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-fullbg-[#1b2635] text-white rounded-lg overflow-hidden">
+            <table className="w-full bg-[#1b2635] text-white rounded-lg overflow-hidden">
               <thead>
                 <tr className="bg-gray-700">
                   {["番号", "状態", "時間", "メッセージ", "区分", "チェック"].map((column) => (
