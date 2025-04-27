@@ -363,7 +363,7 @@ const CompanyManagementPage = () => {
 
   const filteredCompanies = companies.filter((companies) =>
     Object.values(companies).some(
-      (value) => value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      (company) => company.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
 
