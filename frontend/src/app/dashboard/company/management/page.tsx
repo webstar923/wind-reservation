@@ -10,8 +10,6 @@ import { notify } from '@/utils/notification';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import City from './cities.js';
-
-
 import * as React from 'react';
 import useAutocomplete, {
   AutocompleteGetTagProps,
@@ -256,7 +254,7 @@ const selectCities: readonly CityOptionType[] = [
 ];
 
 const CompanyManagementPage = () => {
-  const { getAllCompanies, createCompany, updateCompany,deleteCompany} = useDashboard();
+  const { getAllCompanies, createCompany, updateCompany, deleteCompany } = useDashboard();
   const [companies, setCompanies] = useState<Compay[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // Add modal state
   const [modalContent, setModalContent] = useState<{ type: string, companies?: Compay | null } | null>(null);
@@ -294,7 +292,6 @@ const CompanyManagementPage = () => {
     groupedOptions,
     value,
     focused,
-    setAnchorEl,
   } = useAutocomplete({
     id: 'customized-hook-demo',
     multiple: true,
@@ -303,10 +300,10 @@ const CompanyManagementPage = () => {
     onChange: (event, newValue) => setSelectedCities(newValue),
     getOptionLabel: (option) => option.title,
   });
-  
-  const inputProps = getInputProps();
-  const inputRef = inputProps.ref;
-  
+
+
+
+
 
   const validateData = (data: any) => {
     if (!data.company_name) {
@@ -330,7 +327,7 @@ const CompanyManagementPage = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
     }
-  }, [focuseds]); 
+  }, [focuseds]);
   const handleFocus = () => {
     setFocuseds(!focuseds);
   };
@@ -343,14 +340,23 @@ const CompanyManagementPage = () => {
     const fetchData = async () => {
       try {
         const result = await getAllCompanies();
+        console.log("API結果:", result); // ← デバッグログ（後で消してOK）
 
-        setCompanies(result);
+        if (Array.isArray(result)) {
+          setCompanies(result);
+        } else {
+          console.error("取得したデータが配列ではありません:", result);
+          setCompanies([]); // エラー防止：空配列にしておく
+        }
       } catch (error) {
-        console.error("Error fetching data", error);
+        console.error("データ取得エラー:", error);
+        setCompanies([]); // もし取得失敗したらとりあえず空配列
       }
     };
+
     fetchData();
   }, []);
+
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -439,8 +445,8 @@ const CompanyManagementPage = () => {
         if (createdCompany) {
           setCity(null);
           setSelectedCities([]);
-          console.log(createdCompany,"123123132");
-          
+          console.log(createdCompany, "123123132");
+
           setCompanies(prevcompanies => [
             ...prevcompanies,
             createdCompany.data
@@ -457,7 +463,7 @@ const CompanyManagementPage = () => {
     }
 
   };
-  const handleUpdate = async () =>{
+  const handleUpdate = async () => {
     const CDT = value.map(item => item.title).join(',');
     const saveCompanyData = {
       company_name: companyName,
@@ -475,8 +481,8 @@ const CompanyManagementPage = () => {
     } else {
       try {
         const updatedCompany = await updateCompany(companyId, saveCompanyData);
-        console.log(updatedCompany,"ddddd");
-        
+        console.log(updatedCompany, "ddddd");
+
         setCompanies(prevCompanies =>
           prevCompanies.map(company =>
             company.id === updatedCompany.data.id
@@ -556,13 +562,13 @@ const CompanyManagementPage = () => {
                 {currentCompanies.map((company, index) => (
                   <tr key={company.id} className={`${index % 2 === 0 ? "bg-[#2a3a53] p-3" : "bg-[#2a364d] p-3"} hover:bg-[#444e5c] `}>
                     <td className="pl-4 py-3 whitespace-nowrap">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td　className="pl-4 py-3 whitespace-nowrap">{company.company_name}</td>
-                    <td　className="pl-4 py-3 whitespace-nowrap">{company.representative_name}</td>
-                    <td　className="pl-4 py-3 whitespace-nowrap">{company.email}</td>
-                    <td　className="pl-4 py-3 whitespace-nowrap">{company.address}</td>
-                    <td　className="pl-4 py-3 whitespace-nowrap">{company.available_time}</td>
-                    <td　className="pl-4 py-3 whitespace-nowrap">{company.available_prefecture}</td>
-                    <td　className="pl-4 py-3 ">{company.available_cities}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{company.company_name}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{company.representative_name}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{company.email}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{company.address}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{company.available_time}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{company.available_prefecture}</td>
+                    <td className="pl-4 py-3 ">{company.available_cities}</td>
                     <td className=" py-3 pr-1 ">
                       <div className="flex justify-center items-center gap-2 text-[12px] w-full h-full whitespace-nowrap">
                         <button onClick={() => openModal(company, 'edit')} className="bg-blue-500 hover:bg-blue-700 px-2 py-1 rounded">編集</button>
