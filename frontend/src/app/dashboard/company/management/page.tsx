@@ -340,23 +340,13 @@ const CompanyManagementPage = () => {
     const fetchData = async () => {
       try {
         const result = await getAllCompanies();
-        console.log("API結果:", result); // ← デバッグログ（後で消してOK）
-
-        if (Array.isArray(result)) {
-          setCompanies(result);
-        } else {
-          console.error("取得したデータが配列ではありません:", result);
-          setCompanies([]); // エラー防止：空配列にしておく
-        }
+        setCompanies(result);
       } catch (error) {
-        console.error("データ取得エラー:", error);
-        setCompanies([]); // もし取得失敗したらとりあえず空配列
+        console.error("Error fetching data", error);
       }
     };
-
     fetchData();
   }, []);
-
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -559,7 +549,7 @@ const CompanyManagementPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentCompanies.map((company, index) => (
+                {currentCompanies.length > 0 && currentCompanies.map((company, index) => (
                   <tr key={company.id} className={`${index % 2 === 0 ? "bg-[#2a3a53] p-3" : "bg-[#2a364d] p-3"} hover:bg-[#444e5c] `}>
                     <td className="pl-4 py-3 whitespace-nowrap">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{company.company_name}</td>
