@@ -340,7 +340,12 @@ const CompanyManagementPage = () => {
     const fetchData = async () => {
       try {
         const result = await getAllCompanies();
-        setCompanies(result);
+        if (Array.isArray(result)) {
+          setCompanies(result);
+        } else {
+          console.error("取得したデータが配列ではありません:", result);
+          setCompanies([...result]); // エラー防止：空配列にしておく
+        }
       } catch (error) {
         console.error("Error fetching data", error);
       }
