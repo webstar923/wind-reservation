@@ -3,8 +3,7 @@ const Company = require('../models/Company');
 const getAllCompanies = async (req, res) => {
   try {      
     const companies = await Company.findAll();
-    const dataValues = companies.map(company => company.dataValues);
-    res.status(201).json(dataValues);
+    res.status(201).json(companies);
   } catch (err) {
     res.status(500).json({ message: '会社資料の取得に失敗しました', error: err.message });
   }
