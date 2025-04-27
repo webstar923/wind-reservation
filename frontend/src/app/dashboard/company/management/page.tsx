@@ -340,6 +340,8 @@ const CompanyManagementPage = () => {
     const fetchData = async () => {
       try {
         const result = await getAllCompanies();
+        console.log(result,"ddddddddd");
+        
         if (Array.isArray(result)) {
           setCompanies(result);
         } else {
@@ -368,7 +370,7 @@ const CompanyManagementPage = () => {
 
   const filteredCompanies = companies.filter((companies) =>
     Object.values(companies).some(
-      (company) => company.toString().toLowerCase().includes(searchTerm.toLowerCase())
+      (value) => value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
 
