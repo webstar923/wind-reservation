@@ -691,7 +691,7 @@ const CompanyManagementPage = () => {
                           const { key, ...tagProps } = getTagProps({ index });
                           return <StyledTag key={key} {...tagProps} label={option.title} />;
                         })}
-                        <input {...inputProps} ref={inputRef} />
+                        <input {...getInputProps()} />
                       </InputWrapper>
                     </div>
 
@@ -832,7 +832,7 @@ const CompanyManagementPage = () => {
                           const { key, ...tagProps } = getTagProps({ index });
                           return <StyledTag key={key} {...tagProps} label={option.title} />;
                         })}
-                        <input {...inputProps} ref={inputRef} />
+                        <input {...getInputProps()} />
                       </InputWrapper>
                     </div>
 
