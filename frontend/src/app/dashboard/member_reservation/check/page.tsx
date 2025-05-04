@@ -45,6 +45,8 @@ const ReservationHistory = () => {
     const fetchData = async () => {
       try {
         const data = await getFutureReservationData();
+        console.log("11111111",data);
+        
         setReservationDatas(data);
       } catch (error) {
         console.error("Error fetching data", error);

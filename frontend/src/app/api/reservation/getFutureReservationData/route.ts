@@ -4,8 +4,7 @@ import { fetchWithAuth } from '@/utils/fetchUtils';
 const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
 const BASE_URL = `${NEXT_PUBLIC_API_BASE_URL}/reservation/getFutureReservationData`
 export async function GET() {
-  try {    
-      
+  try {     
     
     const res = await fetchWithAuth(BASE_URL, {
       method: 'GET',

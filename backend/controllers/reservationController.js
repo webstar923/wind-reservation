@@ -437,7 +437,6 @@ const getAllReservationData = async (req, res) => {
 };
 const getFutureReservationData = async (req, res) => {
   try {
- 
     pastReservationItems = await Reservation.findAll({
       where: {
         start_time: { [Op.gte]: new Date() },

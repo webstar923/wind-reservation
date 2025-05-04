@@ -1,22 +1,32 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { notify } from '@/utils/notification';
-import { EventClickArg } from '@fullcalendar/core';
+import DashboardLayout from '@/app/layout/DashboardLayout';
 import { useDashboard } from '@/hooks/useDashboard';
+import { EventClickArg } from '@fullcalendar/core';
 import { Modal } from "@mui/material";
 
 
-import Link from 'next/link';
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import jaLocale from "@fullcalendar/core/locales/ja";
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import DashboardLayout from '@/app/layout/DashboardLayout';
+import Link from 'next/link';
+
 
 interface Event {
+  customer_address: string,
+  customer_name: string,
+  customer_phoneNum: string,
+  end_time: string,
+  id: number,
+  installation_type_id: number,
+  start_time: string,
+  status: string,
+  worker_id: number,
+}
+
+interface Reservation {
   customer_address: string,
   customer_name: string,
   customer_phoneNum: string,
@@ -45,85 +55,31 @@ const currencies = [
     label: 'キャンセル',
   },
 ];
+interface ChatHistory {
+  key: string,
+  value: string
+}
+
 const ReservationManagementPage = () => {
-  const { getReservationListData, updateReservation, deleteReservation, createReservation } = useDashboard();
+  const { getReservationListData, updateReservation, deleteReservation, createReservation, getChatHistory } = useDashboard();
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const [modalOpen, setModalOpen] = useState(false);
   const calendarRef = useRef(null);
-  const [originalData, setOriginalData] = useState<Event[]>([]);
   const [changedData, setChangedData] = useState<{ id: string, title: string, date: string }[] | []>([]);
+  const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
 
-  const handleEventClick = (clickInfo: EventClickArg) => {
-    if (originalData && Array.isArray(originalData)) {
-      const selectedEvent = originalData.find(
-        (event: Event) => String(event.id) === clickInfo.event._def.publicId
-      );
-      if (selectedEvent) {
-        setSelectedEvent(selectedEvent);
-      }
-    } else {
-      console.error('originalData is not available');
-    }
+  const handleEventClick = async (clickInfo: EventClickArg) => {
+
+    const data = await getChatHistory(Number(clickInfo.event._def.publicId));
+
+    const chatHistoryArray = data[0]["history"].split("\n").map((line: string) => {
+      const [key, value = ""] = line.split(": ");
+      return { key: key.replace("<br/>", ""), value };
+    });
+    setChatHistories(chatHistoryArray);
     setModalOpen(true);
   };
-  const handleSave = async () => {
-
-    if (String(selectedEvent?.id) !== "0") {
-      // Update existing reservation
-      if (selectedEvent && originalData) {
-        try {
-          await updateReservation(selectedEvent);
-          // Update the list of reservations
-          const updatedEvents = originalData.map((event: Event) =>
-            event.id === selectedEvent.id ? selectedEvent : event
-          );
-
-          setOriginalData(updatedEvents);
-          setChangedData(
-            updatedEvents.map((reservation: Event) => ({
-              id: String(reservation.id),
-              title: `予約番号${reservation.id}`,
-              date: new Date(reservation.start_time).toISOString().split("T")[0],
-            }))
-          );
-          notify('success', '成功!', '予約が成果的に行われました!');
-        } catch {
-          notify('error', '失敗!', '予約追加に失敗しました!');
-        }
-
-        setModalOpen(false);
-      } else {
-        console.error("originalData is null or undefined.");
-      }
-    } else {
-      // Create new reservation
-      try {
-        const newReservation = await createReservation(selectedEvent);
-
-        if (newReservation) {
-          // Add new reservation to state
-          const updatedOriginalData = [...originalData, newReservation];
-          setOriginalData(updatedOriginalData);
-
-          setChangedData([
-            ...(changedData ?? []), // If changedData is undefined, fallback to an empty array
-            {
-              id: newReservation.id,
-              title: `予約番号${newReservation.id}-${newReservation.work_name}`,
-              date: new Date(newReservation.start_time).toISOString().split("T")[0],
-            },
-          ]);
-
-
-        }
-        setModalOpen(false);
-      } catch (error) {
-        console.error("Error creating reservation:", error);
-      }
-    }
-  };
-
   const handleDatesSet = async ({ start, end }: { start: Date; end: Date }) => {
     const startDate = start.toISOString();
     const endDate = end.toISOString();
@@ -134,7 +90,6 @@ const ReservationManagementPage = () => {
     if (!Array.isArray(data)) { // Check if data is an array
       console.log('Expected data to be an array, but got:', data);
     } else {
-      setOriginalData(data);
 
       const dataValues = data.map((reservation: Event) => {
         const formattedDate = new Date(reservation.start_time).toISOString().split('T')[0];
@@ -149,30 +104,6 @@ const ReservationManagementPage = () => {
       setChangedData(dataValues);
     }
   };
-
-  const handleDelete = () => {
-    if (selectedEvent?.id) {
-      try {
-
-        deleteReservation(Number(selectedEvent?.id));
-        setChangedData((prevChangedData) => {
-          return (prevChangedData ?? []).filter(data => data.id !== String(selectedEvent.id));
-        });
-
-        notify('success', '成功!', '予約が成果的に削除されました!');
-
-        setModalOpen(false);
-      } catch (error) {
-        console.error('Error during delete operation:', error);
-        notify('error', '失敗!', '予約の削除に失敗しました!');
-      }
-    } else {
-      console.error('Selected event is not available for deletion.');
-      notify('error', '失敗!', '選択されたイベントがありません。');
-    }
-  };
-
-
   useEffect(() => {
     const now = new Date();
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -194,10 +125,10 @@ const ReservationManagementPage = () => {
       <div className="flex flex-col">
         <div className="bg-[#1b2635] p-8">
           <div className="flex flex-col items-start mb-4">
-            <h2 className="text-3xl text-white">予約管理</h2>
-            <div className='flex mt-5 text-gray-400 '>
-              <Link href={"/dashboard/company/reservation"}><p className='text-[18px] text-[#407AD6] mx-2'>予約管理</p> </Link>/<Link href={"/dashboard/company/reservation/history"}><p className='text-[18px]  mx-2'>過去の予約履歴</p> </Link>
-            </div>
+            <h2 className="text-3xl text-white">予約確認</h2>
+            {/* <div className='flex text-gray-400 mt-2'>
+              <Link href="/dashboard/member_reservation/check/calender" className='text-[#407AD6] mr-2'>カレンダー形式で表示</Link> / <Link href="/dashboard/member_reservation/check" className='hover:text-[#407AD6] ml-2'>リスト形式で表示</Link>
+            </div> */}
           </div>
           <div className="bg-[#FFFFFF] p-5 shadow-lg rounded-lg">
             <FullCalendar
@@ -220,6 +151,8 @@ const ReservationManagementPage = () => {
               eventClick={(event) => handleEventClick(event)}
               height="600px"
             />
+
+
             <Modal
               open={modalOpen}
               onClose={() => setModalOpen(false)}
@@ -227,97 +160,30 @@ const ReservationManagementPage = () => {
               aria-describedby="edit-reservation-description"
               className='flex justify-center items-center'
             >
-              <div className="modal-content p-4 bg-[#FFFFFF] w-[40%] rounded-lg">
-                {selectedEvent && (
-                  <div className="flex inset-0 items-center justify-center  bg-opacity-50">
-                    <div className="bg-[#FFFFFF] p-6 rounded-[10px] w-full">
-                      <h2 className="text-xl font-bold mb-4">予約編集</h2>
-                      <div className="space-y-4">
-                        <TextField
-                          label="顧客名"
-                          value={selectedEvent.customer_name}
-                          onChange={(e) => setSelectedEvent({
-                            ...selectedEvent,
-                            customer_name: e.target.value
-                          })}
-                          variant="outlined"
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                        <TextField
-                          label="顧客住所"
-                          value={selectedEvent.customer_address}
-                          onChange={(e) => setSelectedEvent({
-                            ...selectedEvent,
-                            customer_address: e.target.value
-                          })}
-                          variant="outlined"
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                        <TextField
-                          label="電話番号"
-                          value={selectedEvent.customer_phoneNum}
-                          onChange={(e) => setSelectedEvent({
-                            ...selectedEvent,
-                            customer_phoneNum: e.target.value
-                          })}
-                          variant="outlined"
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                        <TextField
-                          select
-                          label="予約状況"
-                          value={selectedEvent.status}  // Use `value` instead of `defaultValue`
-                          onChange={(e) => setSelectedEvent({
-                            ...selectedEvent,
-                            status: e.target.value
-                          })}
-                          className="w-full p-2 border border-gray-300 rounded"
-                        >
-                          {currencies.map((option, index) => (
-                            <MenuItem key={`${option.value}-${index}`} value={option.value}>
-                              {option.label}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                        <TextField
-                          type="date"
-
-                          value={selectedEvent.start_time || "01/01/2001"}
-                          onChange={(e) => setSelectedEvent({
-                            ...selectedEvent,
-                            start_time: e.target.value
-                          })}
-                          variant="outlined"
-                          className="w-full p-2 border border-gray-300 rounded"
-                        />
-                      </div>
-                      <div className="flex justify-end mt-4 space-x-2">
-                        <button
-                          onClick={handleSave}
-                          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                        >
-                          保存
-                        </button>
-                        {selectedEvent.id ? (
-                          <button
-                            onClick={handleDelete}
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-                          >
-                            削除
-                          </button>
-                        ) : ""}
-
-                        <button
-                          onClick={() => setModalOpen(false)}
-                          className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-                        >
-                          取消
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
+              <div className="flex w-[50%] justify-center items-center z-20 top-2">
+                <div className=" max-h-[400px] bg-[#aac9c9] text-white rounded-lg p-2 pr-0 overflow-auto custom-scrollbar">
+                  <table className="w-full ">
+                    <thead>
+                      <tr className="bg-lime-700">
+                        {["質問", "答え"].map((header, index) => (
+                          <th key={index} className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider cursor-pointer">
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(chatHistories ?? []).map((history, index) => (
+                        index !== 0 && (
+                          <tr key={index} className="hover:bg-gray-100 bg-[#d1d8da]">
+                            <td className="px-6 py-3 whitespace-wrap text-[#201f71]">{history?.key}</td>
+                            <td className="px-6 py-3 whitespace-wrap text-[#201f71]">{history?.value}</td>
+                          </tr>
+                        )
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </Modal>
           </div>

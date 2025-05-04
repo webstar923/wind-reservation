@@ -113,7 +113,7 @@ const Sidebar = () => {
             </li>
             <li
               key={`${path}-company3`}
-              className={`w-full text-white mt-0 ${pathname === "/dashboard/reservation/reservation-history" ? 'bg-[#1e293a] text-white' : ''} 
+              className={`w-full text-white mt-0 ${pathname === "/dashboard/reservation/reservation" ? 'bg-[#1e293a] text-white' : ''} 
               ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
               style={{ marginTop: "0px" }}
               onClick={(e) => linkOnclick(e, "/dashboard/reservation/reservation")}
