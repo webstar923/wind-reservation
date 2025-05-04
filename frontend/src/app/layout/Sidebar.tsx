@@ -166,34 +166,7 @@ const Sidebar = () => {
                   {(isSidebarOpen || isMobile) ? "工事会社ー覧" : "会社"}
                 </span>
               </div>
-            </li>
-            <li
-              key={`${path}-company1`}
-              className={`w-full text-white mt-0 ${pathname === "/dashboard/company/view" ? 'bg-[#1e293a] text-white' : ''} 
-              ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
-              style={{ marginTop: "0px" }}
-              onClick={(e) => linkOnclick(e, "/dashboard/company/view")}
-            >
-              <div className="flex items-center">
-                <span className={`text-[15px] ${isSubActive && "m-0"} ${(isSidebarOpen || isMobile) ? "ml-9" : "ml-3"}`}>
-                  {(isSidebarOpen || isMobile) ? "工事職員ー覧" : "職員"}
-                </span>
-              </div>
-            </li>
-            <li
-              key={`${path}-company2`}
-              className={`w-full text-white mt-0 ${pathname === "/dashboard/company/schedule" ? 'bg-[#1e293a] text-white' : ''} 
-              ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
-              style={{ marginTop: "0px" }}
-              onClick={(e) => linkOnclick(e, "/dashboard/company/schedule")}
-            >
-              <div className="flex items-center">
-                <span className={`text-[15px] ${isSubActive && "m-0"} ${(isSidebarOpen || isMobile) ? "ml-9" : "ml-3"}`}>
-                  {(isSidebarOpen || isMobile) ? "工事職員日程閲覧" : "日程"}
-                </span>
-              </div>
-            </li>
-            
+            </li>       
           </>
         )}
       </>
