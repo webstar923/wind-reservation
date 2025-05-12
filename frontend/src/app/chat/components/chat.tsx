@@ -291,8 +291,7 @@ const Chat = () => {
                   <div className="flex gap-5 relative">
                     <div className="flex flex-col items-center justify-center">
                       <div className="flex justify-center items-center">
-                        <Image src="/assets/images/auth/logo.png" alt="logo" width={120} height={120} priority />
-                        <p className="font-bold text-[100px] text-[#005596] "><span className="text-[#e6494f] text-[90px]">in</span>g</p>
+                        <Image src="/assets/images/auth/big-logo.png" alt="logo" width={320} height={220} priority />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 my-[9px]">
@@ -335,8 +334,7 @@ const Chat = () => {
                   <div className=" hidden sm:block  gap-3 relative">
                     <div className="flex flex-col items-center justify-center">
                       <div className="flex justify-center items-center">
-                        <Image src="/assets/images/auth/logo.png" alt="logo" width={120} height={120} priority />
-                        <p className="font-bold text-[100px] text-[#005596] "><span className="text-[#e6494f] text-[90px]">in</span>g</p>
+                        <Image src="/assets/images/auth/big-logo.png" alt="logo" width={320} height={220} priority />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 my-[9px]">
@@ -383,8 +381,7 @@ const Chat = () => {
                         )
                       }
                       <div className="hidden sm:flex justify-center items-center w-[270px]">
-                        <Image src="/assets/images/auth/logo.png" alt="logo" width={120} height={120} priority />
-                        <p className="font-bold text-[100px] text-[#005596] "><span className="text-[#e6494f] text-[90px]">in</span>g</p>
+                        <Image src="/assets/images/auth/big-logo.png" alt="logo" width={320} height={220} priority />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 my-[9px]">
@@ -437,8 +434,7 @@ const Chat = () => {
                       }
 
                       <div className="hidden sm:flex justify-center items-center">
-                        <Image src="/assets/images/auth/logo.png" alt="logo" width={120} height={120} priority />
-                        <p className="font-bold text-[100px] text-[#005596] "><span className="text-[#e6494f] text-[90px]">in</span>g</p>
+                        <Image src="/assets/images/auth/big-logo.png" alt="logo" width={320} height={220} priority />
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 my-[9px]">

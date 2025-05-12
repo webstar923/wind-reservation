@@ -184,9 +184,8 @@ const Sidebar = () => {
         <div className={`flex justify-between items-center px-3 ${isMobile ? ' mb-10' : 'mt-3 sm:mb-14'} ${(isMobile && isListsCollapsed) && 'hidden'} }`}>
           <div className="flex items-center cursor-pointer" onClick={(e) => linkOnclick(e, "/dashboard/company")} >
             {(isSidebarOpen && !isMobile) || (isMobile) ? (
-              <div className="flex justify-center items-center hover:scale-110">
-                <Image src="/assets/images/auth/logo.png" alt="logo" width={60} height={60} style={{ width: "auto", height: "auto" }} priority />
-                <p className={`font-bold text-[60px] text-[#407AD6] }`}><span className="text-[#e6494f] text-[60px]">in</span>g</p>
+              <div className="flex justify-center items-center hover:scale-110 mr-2">
+                <Image src="/assets/images/auth/big-logo.png" alt="logo" width={360} height={360} style={{ width: "auto", height: "auto" }} priority />
               </div>
             ) : (
               <Image
