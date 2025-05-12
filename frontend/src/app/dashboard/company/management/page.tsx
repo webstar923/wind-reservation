@@ -537,7 +537,7 @@ const CompanyManagementPage = () => {
             <table className="w-full bg-[#233044] text-white rounded-lg overflow-hidden p-3">
               <thead>
                 <tr className="bg-[#667486]">
-                  {["番号", "会社名", "代表者名", "メールアドレス", "住所", "対応可能・県", "対応可能・市町村", "対応可能時間"].map((column) => (
+                  {["番号", "会社名", "代表者名", "メールアドレス", "住所", "対応可能時間", "都道府県", "市区町村"].map((column) => (
                     <th
                       key={column}
                       className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider cursor-pointer"

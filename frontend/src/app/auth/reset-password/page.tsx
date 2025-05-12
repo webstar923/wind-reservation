@@ -62,8 +62,7 @@ const ResetPassword = () => {
     <AuthLayout>
       <div className="mt-[100px] w-[70%]">
         <div className="flex justify-center items-center">
-          <Image src="/assets/images/auth/logo.png" alt="logo" width={70} height={70}  priority />
-          <p className="font-bold text-[70px] text-[#005596]"><span className="text-[#e6494f] text-[60px]">in</span>g</p>
+          <Image src="/assets/images/auth/big-logo.png" alt="logo" width={270} height={170}  priority />
         </div>
 
         <div className="border-b border-gray-300 p-5 flex flex-col justify-center ">

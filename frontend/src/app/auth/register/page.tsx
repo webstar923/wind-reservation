@@ -68,8 +68,7 @@ const Register: React.FC = () => {
     <AuthLayout>
       <div className="w-[70%] flex flex-col justify-center">
         <div className="flex justify-center items-center">
-          <Image src="/assets/images/auth/logo.png" alt="logo" width={70} height={70}  priority />
-          <p className="font-bold text-[70px] text-[#005596]"><span className="text-[#e6494f] text-[60px]">in</span>g</p>
+          <Image src="/assets/images/auth/big-logo.png" alt="logo" width={270} height={170}  priority />
         </div>
         <div className="w-full border-b border-gray-300 p-5 flex flex-col justify-center mb-3">
           <h2 className="text-2xl font-semibold text-gray-800 text-center">会員登録</h2>
