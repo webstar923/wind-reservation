@@ -13,8 +13,62 @@ import { DateClickArg } from "@fullcalendar/interaction";
 import Modal from '@shared/components/UI/Modal';
 import TextField from '@mui/material/TextField';
 import { useDashboard } from '@/hooks/useDashboard';
+import Autocomplete, { autocompleteClasses, createFilterOptions } from '@mui/material/Autocomplete';
 
+interface CityOptionType {
+  inputValue?: string;
+  name: string;
+}
 
+const selectCities: readonly CityOptionType[] = [
+  { "name": "北海道" },
+  { "name": "青森県" },
+  { "name": "岩手県" },
+  { "name": "宮城県" },
+  { "name": "秋田県" },
+  { "name": "山形県" },
+  { "name": "福島県" },
+  { "name": "茨城県" },
+  { "name": "栃木県" },
+  { "name": "群馬県" },
+  { "name": "埼玉県" },
+  { "name": "千葉県" },
+  { "name": "東京都" },
+  { "name": "神奈川県" },
+  { "name": "新潟県" },
+  { "name": "富山県" },
+  { "name": "石川県" },
+  { "name": "福井県" },
+  { "name": "山梨県" },
+  { "name": "長野県" },
+  { "name": "岐阜県" },
+  { "name": "静岡県" },
+  { "name": "愛知県" },
+  { "name": "三重県" },
+  { "name": "滋賀県" },
+  { "name": "京都府" },
+  { "name": "大阪府" },
+  { "name": "兵庫県" },
+  { "name": "奈良県" },
+  { "name": "和歌山県" },
+  { "name": "鳥取県" },
+  { "name": "島根県" },
+  { "name": "岡山県" },
+  { "name": "広島県" },
+  { "name": "山口県" },
+  { "name": "徳島県" },
+  { "name": "香川県" },
+  { "name": "愛媛県" },
+  { "name": "高知県" },
+  { "name": "福岡県" },
+  { "name": "佐賀県" },
+  { "name": "長崎県" },
+  { "name": "熊本県" },
+  { "name": "大分県" },
+  { "name": "宮崎県" },
+  { "name": "鹿児島県" },
+  { "name": "沖縄県" }
+];
 
 interface Option {
   id: string;
@@ -47,6 +101,8 @@ const Chat = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedtDate, setSelectedDate] = useState('');
   const [changedData, setChangedData] = useState<{ id: string, address: string, title: string, date: string }[] | []>([]);
+  const [city, setCity] = React.useState<CityOptionType | null>(null);
+  
 
   const { messages, handleButtonClick, handleInputEnterPress,
     handleBackClick, createReservation
@@ -360,6 +416,63 @@ const Chat = () => {
                 </div>
               </div>
             )}
+            {message.type === 'dropdown' && (
+              <div className="flex flex-col w-full  gap-3 flex-wrap mt-[10px] relative  ">
+                <div className='flex md:w-full w-[50vw] justify-start items-center gap-5'>
+                  <Autocomplete
+                    value={city}
+                    onChange={(event, newValue) => {
+                      if (typeof newValue === 'string') {
+                        setCity({
+                          name: newValue,
+                        });
+                      } else if (newValue && newValue.inputValue) {
+                        // Create a new value from the user input
+                        setCity({
+                          name: newValue.inputValue,
+                        });
+                      } else {
+                        setCity(newValue);
+                      }
+                    }}
+                    selectOnFocus
+                    clearOnBlur
+                    handleHomeEndKeys
+                    id="free-solo-with-text-demo"
+                    options={selectCities}
+                    getOptionLabel={(option) => {
+                      // Value selected with enter, right from the input
+                      if (typeof option === 'string') {
+                        return option;
+                      }
+                      // Add "xxx" option created dynamically
+                      if (option.inputValue) {
+                        return option.inputValue;
+                      }
+                      // Regular option
+                      return option.name;
+                    }}
+                    renderOption={(props, option) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          {option.name}
+                        </li>
+                      );
+                    }}
+                    sx={{ width: 300 }}
+                    freeSolo
+                    renderInput={(params) => (
+                      <TextField {...params} />
+                    )}
+                  />
+                </div>
+                <div className="flex gap-6">
+                  <Button label="はい" onClickHandler={() => {city?.name && handleInputEnterPress( city?.name || "","inputAddress")}} />
+                  <Button label="いいえ" onClickHandler={() => handleButtonClick("いいえ", message.reqType[0])} />
+                </div>
+              </div>
+            )}
             {message.type === 'checkReservation' && (
               <div className="flex flex-col w-full gap-3 flex-wrap mt-[10px] relative  ">
                 <div
@@ -508,7 +621,7 @@ const Chat = () => {
         <div className="flex inset-0 items-center justify-center">
           <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
             <h2 className="text-xl font-bold mb-4">{isFutureDate(selectedtDate) ? selectedtDate + "日に予約をしたいですか？" : "その日の予約はできません。"}</h2>
-            <p className="mb-6">{isFutureDate(selectedtDate) ? checkDataResult ? "この日を希望する場合は、会社の予約状況を確認し、空いている時間をお知らせできます。":"申し訳ありません。その日はすでに予約が埋まっています。別の日を選択してください。" : "将来の日付のみ選択してください。予約は必ず前日までに行う必要があり、当日の予約はできません。"}</p>
+            <p className="mb-6">{isFutureDate(selectedtDate) ? checkDataResult ? "この日を希望する場合は、会社の予約状況を確認し、空いている時間をお知らせできます。" : "申し訳ありません。その日はすでに予約が埋まっています。別の日を選択してください。" : "将来の日付のみ選択してください。予約は必ず前日までに行う必要があり、当日の予約はできません。"}</p>
             <div className="flex justify-end mt-4 space-x-2">
               <button
                 onClick={isFutureDate(selectedtDate) && checkDataResult ? selectDate : handleCloseModal}  // This will trigger the deletion action

@@ -241,11 +241,12 @@ function __getDatesBetween(startTime, endTime) {
   return dates;
 }
 const createReservation = async (req, res) => {  
+  console.log("aaaaaaaaaaa",req.body);
+  
   try {
-    const {customer_address,start_time,customer_name,customer_phoneNum,history} = req.body;
-
-
-    if (!customer_address||!start_time||!customer_name||!customer_phoneNum) {
+    const {customer_address,start_time,customer_name,customer_phoneNum,prefecture, history} = req.body; 
+    
+    if (!customer_address||!start_time||!customer_name||!customer_phoneNum||!prefecture) {
       return res.status(400).json({ message: 'All required fields must be filled' });
     }
    
@@ -301,7 +302,7 @@ const createReservation = async (req, res) => {
     //     });
     //   }
       const formattedHistory = history.map(item => `${item.key}: ${item.value}`).join("\n");
-      const newReservatoin = await Reservation.create({customer_name,customer_address,customer_phoneNum,start_time:start_time,end_time:start_time});
+      const newReservatoin = await Reservation.create({customer_name,customer_address,customer_phoneNum,prefecture,start_time:start_time,end_time:start_time});
       const newHistory = await ChatHistory.create({reservation_id:newReservatoin.id, history:formattedHistory});
       logger.logImportantInfo(customer_name+'ユーザーによって新しい予約が登録されました。予約番号は'+newReservatoin.id+'です。', req.id, req.originalUrl, req.method, res.statusCode, req.user?req.user.id : null, req.ip);
       res.status(201).json(newReservatoin);

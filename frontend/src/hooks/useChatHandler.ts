@@ -1,3 +1,4 @@
+import { log } from 'console';
 import { useState, useEffect, useRef } from 'react';
 export const useChatHandler = () => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -46,6 +47,8 @@ export const useChatHandler = () => {
   }, []);
 
   const handleButtonClick = (value: string, reqType: string) => {    
+    console.log(value,reqType);
+    
     if (reqType === "select_requirement" || value === "予約変更" ||  value === "予約照会") {
       setChatHistory([]);      
     }    
@@ -74,6 +77,8 @@ export const useChatHandler = () => {
   };
 
   const handleInputEnterPress = async (value: string, reqType: string) => {  
+    console.log(value,reqType);
+    
     const requirement = chatHistory.find(item => item.key === "私たちのサイトにお越しいただきありがとうございます。")?.value||chatHistory.find(item => item.key === "私はどのようにもっとお手伝いできますか？")?.value;
     if (reqType.trim() === "selectDate" && requirement === "予約照会") { 
       const customer_name = chatHistory.find(item => item.key === "恐れ入りますが、お名前をお聞かせいただけますでしょうか？")?.value;
@@ -133,6 +138,7 @@ export const useChatHandler = () => {
     const customer_name = chatHistory.find(item => item.key === "恐れ入りますが、お名前をお聞かせいただけますでしょうか？")?.value;
     const customer_address = chatHistory.find(item => item.key === "ご住所をお聞かせいただけますでしょうか？")?.value;
     const customer_phoneNum = chatHistory.find(item => item.key === "ご連絡させていただける電話番号を教えてください。")?.value;
+    const prefecture = chatHistory.find(item => item.key === "都道府県を選択してください。")?.value;
     const firstMatch = chatHistory.find(item => item.key === "私たちのサイトにお越しいただきありがとうございます。");
     const secondMatch = chatHistory.find(item => item.key === "私はどのようにもっとお手伝いできますか？");
 
@@ -143,7 +149,8 @@ export const useChatHandler = () => {
       start_time: date,
       customer_name: customer_name,
       customer_phoneNum: customer_phoneNum,
-      history:chatHistory
+      history:chatHistory,
+      prefecture:prefecture
     };        
     console.log(requirement);
     console.log(reqType,date);

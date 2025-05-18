@@ -51,10 +51,26 @@ const deleteCompany = async (req, res) => {
     res.status(500).json({ message: '会社情報の削除に失敗しました', error: err.message });
   }
 };
+const getAvailableCompanies = async (req, res) =>{
+  try { 
+    const {prefecture,id} = req.body;    
+    const companies = await Company.findAll({
+      attributes: ['company_name'],
+      where: {
+        available_prefecture: prefecture
+      }
+    });
+    const companyNames = companies.map(c => c.company_name);
+    res.status(200).json(companyNames);
+  } catch (err) {
+    res.status(500).json({ message: '会社資料の取得に失敗しました', error: err.message });
+  }
+}
 
 module.exports = {
   getAllCompanies,
   createCompany,
   updateCompany,
   deleteCompany,
+  getAvailableCompanies
 };

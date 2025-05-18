@@ -6,7 +6,13 @@ const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
-  webpack(config) {
+  webpack(config,{isServer}) {
+    if (!isServer) {
+      config.module.rules.push({
+        test: /\.map$/,
+        use: 'null-loader',
+      });
+    }
     config.module.rules.push({
       test: /\.svg$/, // Match all `.svg` files
       use: [
@@ -29,6 +35,7 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  productionBrowserSourceMaps: false,
 };
 
 export default withNextIntl(nextConfig);

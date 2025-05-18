@@ -374,6 +374,11 @@ export const useDashboard = () => {
       const deleteCompany = async (id: number) => fetchData(`/api/company?id=${id}`, {
         method: 'DELETE',
       });
+   
+     const getAvailableCompanies = async (prefecture:string,id:number) => fetchData('/api/company/getAvailableCompanies', {
+        method: 'POST',
+        body: JSON.stringify({prefecture,id}),
+      });
   return {   
     getUserData,
     changeUser,
@@ -418,7 +423,9 @@ export const useDashboard = () => {
     getAllCompanies,
     createCompany,
     updateCompany,
-    deleteCompany
+    deleteCompany,
+
+    getAvailableCompanies
 
   };
 };

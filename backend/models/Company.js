@@ -26,8 +26,8 @@ const Company = sequelize.define('company', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  available_time: {
-    type: DataTypes.INTEGER,
+  available_rv_num: {
+    type: DataTypes.STRING,
     allowNull: false,
   },},
   { 

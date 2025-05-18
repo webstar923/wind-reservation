@@ -124,7 +124,7 @@ const Sidebar = () => {
                 </span>
               </div>
             </li>
-            <li
+            {/* <li
               key={`${path}-company4`}
               className={`w-full text-white mt-0 ${pathname === "/dashboard/reservation/setting" ? 'bg-[#1e293a] text-white' : ''} 
               ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
@@ -136,8 +136,8 @@ const Sidebar = () => {
                   {(isSidebarOpen || isMobile) ? "予約設定" : "設定"}
                 </span>
               </div>
-            </li>
-            <li
+            </li> */}
+            {/* <li
               key={`${path}-company5`}
               className={`w-full text-white mt-0 ${pathname === "/dashboard/reservation/chat" ? 'bg-[#1e293a] text-white' : ''} 
               ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
@@ -148,7 +148,7 @@ const Sidebar = () => {
                   {(isSidebarOpen || isMobile) ? "チャットフロー管理" : "チャ"}
                 </span>
               </div>
-            </li>
+            </li> */}
             
           </>
         )}

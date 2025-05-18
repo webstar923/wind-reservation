@@ -15,6 +15,12 @@ const Reservation = sequelize.define('Reservation', {
   customer_phoneNum:{
     type:DataTypes.STRING,
   },
+  prefecture:{
+    type:DataTypes.STRING,
+  },
+  company:{
+    type:DataTypes.STRING,
+  },
   status: {
     type: DataTypes.STRING,
     allowNull: false,

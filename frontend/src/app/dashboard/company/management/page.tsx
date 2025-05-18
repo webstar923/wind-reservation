@@ -199,7 +199,7 @@ interface Compay {
   address: string,
   available_prefecture: string,
   available_cities: string,
-  available_time: number
+  available_rv_num:string
 }
 
 
@@ -268,6 +268,15 @@ const CompanyManagementPage = () => {
   const [availableTime, setAvailableTime] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = React.useState<CityOptionType | null>(null);
+  const [weeklyReservationLimits, setWeeklyReservationLimits] = useState({
+    月: '',
+    火: '',
+    水: '',
+    木: '',
+    金: '',
+    土: '',
+    日: '',
+  });
 
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -314,8 +323,6 @@ const CompanyManagementPage = () => {
       return { error: true, message: "メールアドレスを入力してください。" }
     } else if (!data.address) {
       return { error: true, message: "住所を入力してください。" }
-    } else if (!data.available_time) {
-      return { error: true, message: "対応可能な時間を入力してください。" }
     } else if (!data.available_prefecture) {
       return { error: true, message: "県名を選択してください。" }
     } else if (!data.available_cities) {
@@ -394,7 +401,6 @@ const CompanyManagementPage = () => {
       setCompanyId(companies.id);
       setCompanyName(companies.company_name);
       setRepresentativeName(companies.representative_name);
-      setAvailableTime(String(companies.available_time));
       setAddress(companies.address);
       setEmail(companies.email);
       setCity({ name: companies.available_prefecture });
@@ -403,6 +409,21 @@ const CompanyManagementPage = () => {
         .filter(item => item !== "") // 最後の空文字（","のせいでできる）を除去
         .map(item => ({ title: item })); // {title:"..."} に変換
       setSelectedCities(cityArray);
+      const weeklyReservationLimits = Object.fromEntries(
+        companies.available_rv_num.split(',').map(pair => {
+          const [key, value] = pair.split(':');
+          return [key, String(value)];
+        })
+      );
+      setWeeklyReservationLimits({
+        月: weeklyReservationLimits?.月 || '',
+        火: weeklyReservationLimits?.火 || '',
+        水: weeklyReservationLimits?.水 || '',
+        木: weeklyReservationLimits?.木 || '',
+        金: weeklyReservationLimits?.金 || '',
+        土: weeklyReservationLimits?.土 || '',
+        日: weeklyReservationLimits?.日 || '',
+      });
 
     } else {
       setCompanyName("");
@@ -422,15 +443,19 @@ const CompanyManagementPage = () => {
   };
 
   const handleCreate = async () => {
+    const String_weeklyReservationLimits = Object.entries(weeklyReservationLimits)
+      .map(([k, v]) => `${k}:${v}`)
+      .join(',');
+
     const CDT = value.map(item => item.title).join(',');
     const saveCompanyData = {
       company_name: companyName,
       representative_name: representativeName,
       email: email,
-      available_time: Number(availableTime),
       address: address,
       available_prefecture: city?.name,
       available_cities: CDT,
+      available_rv_num: String_weeklyReservationLimits,
     }
     const result = await validateData(saveCompanyData);
     if (result["error"]) {
@@ -462,6 +487,9 @@ const CompanyManagementPage = () => {
   };
   const handleUpdate = async () => {
     const CDT = value.map(item => item.title).join(',');
+    const String_weeklyReservationLimits = Object.entries(weeklyReservationLimits)
+      .map(([k, v]) => `${k}:${v}`)
+      .join(',');
     const saveCompanyData = {
       company_name: companyName,
       representative_name: representativeName,
@@ -470,6 +498,8 @@ const CompanyManagementPage = () => {
       address: address,
       available_prefecture: city?.name,
       available_cities: CDT,
+      available_rv_num: String_weeklyReservationLimits,
+
     }
     const result = await validateData(saveCompanyData);
     if (result["error"]) {
@@ -563,7 +593,7 @@ const CompanyManagementPage = () => {
                     <td className="pl-4 py-3 whitespace-nowrap">{company.representative_name}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{company.email}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{company.address}</td>
-                    <td className="pl-4 py-3 whitespace-nowrap">{company.available_time}</td>
+                    <td className="pl-4 py-3 whitespace-nowrap">{company.available_rv_num}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{company.available_prefecture}</td>
                     <td className="pl-4 py-3 ">{company.available_cities}</td>
                     <td className=" py-3 pr-1 ">
@@ -635,24 +665,40 @@ const CompanyManagementPage = () => {
                       className="w-full p-2 border border-[#afabab] rounded"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="availableTime">対応可能時間:</label>
-                    <input
-                      type="number"
-                      placeholder="対応可能時間"
-                      value={availableTime}
-                      onChange={(e) => {
-                        const numericValue = e.target.value.replace(/\D/g, '');
-                        if (/^\d{0,14}$/.test(numericValue)) {
-                          setAvailableTime(numericValue);
+                  <div >
+                    <label className="font-semibold mb-2 block">曜日ごとの予約上限:</label>
+                    <div className='flex'>
+                      {[
+                        ['月', '月曜日'],
+                        ['火', '火曜日'],
+                        ['水', '水曜日'],
+                        ['木', '木曜日'],
+                        ['金', '金曜日'],
+                        ['土', '土曜日'],
+                        ['日', '日曜日'],
+                      ].map(([key, label]) => (
+                        <div key={key} className="mb-2">
+                          <label>{label}:</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            placeholder="0"
+                            value={weeklyReservationLimits[key as keyof typeof weeklyReservationLimits]}
+                            onChange={(e) =>
+                              setWeeklyReservationLimits({
+                                ...weeklyReservationLimits,
+                                [key]: e.target.value.replace(/\D/g, ''),
+                              })
+                            }
+                            className="w-[55px] p-2 border border-[#afabab] rounded"
+                          />
+                        </div>
+                      ))}
+                    </div>
 
-                        }
-                      }}
-                      className="w-full p-2 border border-[#afabab] rounded"
-                    />
                   </div>
                   <div>
-                    <label htmlFor="city">都道府県:</label>
                     <div className='flex w-full justify-start items-center gap-5'>
                       <Autocomplete
                         value={city}
@@ -749,185 +795,204 @@ const CompanyManagementPage = () => {
               </div>
             </div>
           )}
-              {modalContent?.type === 'create' && (
-                <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
-                  <div className=" flex flex-col   bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
-                    <h2 className="text-xl font-bold mb-4">新規会社登録</h2>
-                    <div className="flex flex-col h-[70vh] overflow-auto space-y-4" ref={scrollContainerRef} >
-                      <div>
-                        <label htmlFor="companyName">会社名:</label>
-                        <input
-                          type="text"
-                          placeholder="会社名"
-                          value={companyName}
-                          onChange={(e) => setCompanyName(e.target.value)}
-                          className="w-full p-2 border border-[#afabab] rounded"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="representativeName">代表者名:</label>
-                        <input
-                          type="text"
-                          placeholder="代表者名"
-                          value={representativeName}
-                          onChange={(e) => setRepresentativeName(e.target.value)}
-                          className="w-full p-2 border border-[#afabab] rounded"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="email">メールアドレス:</label>
-                        <input
-                          type="text"
-                          placeholder="メール"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full p-2 border border-[#afabab] rounded"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="address">住所:</label>
-                        <input
-                          type="text"
-                          placeholder="住所"
-                          value={address}
-                          onChange={(e) => setAddress(e.target.value)}
-                          className="w-full p-2 border border-[#afabab] rounded"
-                        />
-                      </div>
-                      <div className='flex flex-col gap-4'>
-                        <label htmlFor="availableTime">対応可能時間:</label>
-                        <input
-                          type="number"
-                          placeholder="対応可能時間"
-                          value={availableTime}
-                          onChange={(e) => {
-                            const numericValue = e.target.value.replace(/\D/g, '');
-                            if (/^\d{0,14}$/.test(numericValue)) {
-                              setAvailableTime(numericValue);
-
+          {modalContent?.type === 'create' && (
+            <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
+              <div className=" flex flex-col   bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
+                <h2 className="text-xl font-bold mb-4">新規会社登録</h2>
+                <div className="flex flex-col h-[70vh] overflow-auto space-y-4" ref={scrollContainerRef} >
+                  <div>
+                    <label htmlFor="companyName">会社名:</label>
+                    <input
+                      type="text"
+                      placeholder="会社名"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      className="w-full p-2 border border-[#afabab] rounded"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="representativeName">代表者名:</label>
+                    <input
+                      type="text"
+                      placeholder="代表者名"
+                      value={representativeName}
+                      onChange={(e) => setRepresentativeName(e.target.value)}
+                      className="w-full p-2 border border-[#afabab] rounded"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email">メールアドレス:</label>
+                    <input
+                      type="text"
+                      placeholder="メール"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full p-2 border border-[#afabab] rounded"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="address">住所:</label>
+                    <input
+                      type="text"
+                      placeholder="住所"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      className="w-full p-2 border border-[#afabab] rounded"
+                    />
+                  </div>
+                  <div >
+                    <label className="font-semibold mb-2 block">曜日ごとの予約上限:</label>
+                    <div className='flex'>
+                      {[
+                        ['月', '月曜日'],
+                        ['火', '火曜日'],
+                        ['水', '水曜日'],
+                        ['木', '木曜日'],
+                        ['金', '金曜日'],
+                        ['土', '土曜日'],
+                        ['日', '日曜日'],
+                      ].map(([key, label]) => (
+                        <div key={key} className="mb-2">
+                          <label>{label}:</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            placeholder="0"
+                            value={weeklyReservationLimits[key as keyof typeof weeklyReservationLimits]}
+                            onChange={(e) =>
+                              setWeeklyReservationLimits({
+                                ...weeklyReservationLimits,
+                                [key]: e.target.value.replace(/\D/g, ''),
+                              })
                             }
-                          }}
-                          className="w-full p-2 border border-[#afabab] rounded"
-                        />
-                        <label htmlFor="city">対応可能・都道府県:</label>
-                        <div className='flex w-full justify-start items-center gap-5'>
-                          <Autocomplete
-                            value={city}
-                            onChange={(event, newValue) => {
-                              if (typeof newValue === 'string') {
-                                setCity({
-                                  name: newValue,
-                                });
-                              } else if (newValue && newValue.inputValue) {
-                                // Create a new value from the user input
-                                setCity({
-                                  name: newValue.inputValue,
-                                });
-                              } else {
-                                setCity(newValue);
-                              }
-                            }}
-                            selectOnFocus
-                            clearOnBlur
-                            handleHomeEndKeys
-                            id="free-solo-with-text-demo"
-                            options={selectCities}
-                            getOptionLabel={(option) => {
-                              // Value selected with enter, right from the input
-                              if (typeof option === 'string') {
-                                return option;
-                              }
-                              // Add "xxx" option created dynamically
-                              if (option.inputValue) {
-                                return option.inputValue;
-                              }
-                              // Regular option
-                              return option.name;
-                            }}
-                            renderOption={(props, option) => {
-                              const { key, ...optionProps } = props;
-                              return (
-                                <li key={key} {...optionProps}>
-                                  {option.name}
-                                </li>
-                              );
-                            }}
-                            sx={{ width: 300 }}
-                            freeSolo
-                            renderInput={(params) => (
-                              <TextField {...params} label="都道府県選択" />
-                            )}
+                            className="w-[55px] p-2 border border-[#afabab] rounded"
                           />
                         </div>
-
-                        <Root>
-                          <div {...getRootProps()} onClick={handleFocus}>
-                            <Label {...getInputLabelProps()}>対応可能・市区町村:</Label>
-                            <InputWrapper className={focused ? 'focused' : ''}>
-                              {value.map((option: FilmOptionType, index: number) => {
-                                const { key, ...tagProps } = getTagProps({ index });
-                                return <StyledTag key={key} {...tagProps} label={option.title} />;
-                              })}
-                              <input {...getInputProps()} />
-                            </InputWrapper>
-                          </div>
-
-                          {groupedOptions.length > 0 && (
-                            <Listbox {...getListboxProps()}>
-                              {city?.name && (City as Record<string, { title: string }[]>)[city.name]?.map((option, index) => {
-                                const { key, ...optionProps } = getOptionProps({ option, index });
-                                return (
-                                  <li key={key} {...optionProps}>
-                                    <span>{option.title}</span>
-                                    <CheckIcon fontSize="small" />
-                                  </li>
-                                );
-                              })}
-                            </Listbox>
-                          )}
-                        </Root>
-                      </div>
+                      ))}
                     </div>
-                    <div className="flex justify-end mt-4 space-x-2">
-                      <button
-                        onClick={handleCreate}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                      >
-                        保存
-                      </button>
-                      <button
-                        onClick={handleCloseModal}
-                        className="bg-[#afabab] text-black px-4 py-2 rounded hover:bg-gray-400"
-                      >
-                        取消
-                      </button>
+
+                  </div>
+                  <div>
+                    <div className='flex w-full justify-start items-center gap-5'>
+                      <Autocomplete
+                        value={city}
+                        onChange={(event, newValue) => {
+                          if (typeof newValue === 'string') {
+                            setCity({
+                              name: newValue,
+                            });
+                          } else if (newValue && newValue.inputValue) {
+                            // Create a new value from the user input
+                            setCity({
+                              name: newValue.inputValue,
+                            });
+                          } else {
+                            setCity(newValue);
+                          }
+                        }}
+                        selectOnFocus
+                        clearOnBlur
+                        handleHomeEndKeys
+                        id="free-solo-with-text-demo"
+                        options={selectCities}
+                        getOptionLabel={(option) => {
+                          // Value selected with enter, right from the input
+                          if (typeof option === 'string') {
+                            return option;
+                          }
+                          // Add "xxx" option created dynamically
+                          if (option.inputValue) {
+                            return option.inputValue;
+                          }
+                          // Regular option
+                          return option.name;
+                        }}
+                        renderOption={(props, option) => {
+                          const { key, ...optionProps } = props;
+                          return (
+                            <li key={key} {...optionProps}>
+                              {option.name}
+                            </li>
+                          );
+                        }}
+                        sx={{ width: 300 }}
+                        freeSolo
+                        renderInput={(params) => (
+                          <TextField {...params} label="都道府県選択" />
+                        )}
+                      />
+                    </div>
+                    <div>
+                      <Root>
+                        <div {...getRootProps()} onClick={handleFocus}>
+                          <Label {...getInputLabelProps()}>市区町村選択:</Label>
+                          <InputWrapper className={focused ? 'focused' : ''}>
+                            {value.map((option: FilmOptionType, index: number) => {
+                              const { key, ...tagProps } = getTagProps({ index });
+                              return <StyledTag key={key} {...tagProps} label={option.title} />;
+                            })}
+                            <input {...getInputProps()} />
+                          </InputWrapper>
+                        </div>
+
+                        {groupedOptions.length > 0 && (
+                          <Listbox {...getListboxProps()}>
+                            {city?.name && (City as Record<string, { title: string }[]>)[city.name]?.map((option, index) => {
+                              const { key, ...optionProps } = getOptionProps({ option, index });
+                              return (
+                                <li key={key} {...optionProps}>
+                                  <span>{option.title}</span>
+                                  <CheckIcon fontSize="small" />
+                                </li>
+                              );
+                            })}
+                          </Listbox>
+                        )}
+                      </Root>
                     </div>
                   </div>
                 </div>
-              )}
-              {modalContent?.type === 'delete' && (
-                <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
-                  <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
-                    <h2 className="text-xl font-bold mb-4">資料を削除しますか?</h2>
-                    <p className="mb-6">この操作は取り消せません。削除を確認してください。</p>
-                    <div className="flex justify-end mt-4 space-x-2">
-                      <button
-                        onClick={handleDelte}  // This will trigger the deletion action
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                      >
-                        はい
-                      </button>
-                      <button
-                        onClick={handleCloseModal}  // This will close the modal without performing any action
-                        className="bg-[#afabab] text-black px-4 py-2 rounded hover:bg-gray-400"
-                      >
-                        いいえ
-                      </button>
-                    </div>
-                  </div>
+                <div className="flex justify-end mt-4 space-x-2">
+                  <button
+                    onClick={handleCreate}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    保存
+                  </button>
+                  <button
+                    onClick={handleCloseModal}
+                    className="bg-[#afabab] text-black px-4 py-2 rounded hover:bg-gray-400"
+                  >
+                    取消
+                  </button>
                 </div>
-              )}
-            </Modal>
+              </div>
+            </div>
+          )}
+          {modalContent?.type === 'delete' && (
+            <div className="flex inset-0 items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-[#FFFFFF] p-6 rounded-[10px] shadow-lg w-full">
+                <h2 className="text-xl font-bold mb-4">資料を削除しますか?</h2>
+                <p className="mb-6">この操作は取り消せません。削除を確認してください。</p>
+                <div className="flex justify-end mt-4 space-x-2">
+                  <button
+                    onClick={handleDelte}  // This will trigger the deletion action
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  >
+                    はい
+                  </button>
+                  <button
+                    onClick={handleCloseModal}  // This will close the modal without performing any action
+                    className="bg-[#afabab] text-black px-4 py-2 rounded hover:bg-gray-400"
+                  >
+                    いいえ
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </Modal>
       </div>
     </DashboardLayout>
   );
