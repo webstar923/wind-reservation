@@ -377,10 +377,17 @@ const ReservationManagementPage = () => {
                         <Autocomplete
                           value={selectedEvent?.prefecture}
                           onChange={(event, newValue) => {
-                            setSelectedEvent({
-                              ...selectedEvent,
-                              prefecture: newValue?.name
-                            })
+                            if (typeof newValue === 'object' && newValue !== null && 'name' in newValue) {
+                              setSelectedEvent({
+                                ...selectedEvent,
+                                prefecture: newValue.name
+                              });
+                            } else {
+                              setSelectedEvent({
+                                ...selectedEvent,
+                                prefecture: ''
+                              });
+                            }
                           }}
                           selectOnFocus
                           clearOnBlur
