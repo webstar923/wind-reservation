@@ -154,7 +154,7 @@ const Api_Log = () => {
 
       {modalContent && (
         <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-          <div className="absolute z-20 w-[90vw] left-[5vw]">
+          <div className="flex justify-center  items-center z-20 ml-[10vw]">
             <table className="w-fullbg-[#1b2635] text-white rounded-lg overflow-hidden">
               <thead>
                 <tr className='bg-lime-700'>

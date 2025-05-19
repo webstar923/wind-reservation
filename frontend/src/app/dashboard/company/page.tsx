@@ -34,7 +34,6 @@ const DashboardPage = () => {
         console.error("Error fetching data", error);
       }
     };
-
     fetchData();
   },[]);  
 

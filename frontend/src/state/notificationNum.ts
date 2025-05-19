@@ -14,8 +14,7 @@ interface NotificationData {
 }
 
 export const useNotificationData = create<NotificationData>((set) => ({
-  NotificationNum: { // Fixed typo from 'cahtData' to 'NotificationNum'
-    
+  NotificationNum: { // Fixed typo from 'cahtData' to 'NotificationNum'    
     Notification_Num:0,
     Message_Num:0,
     userRole:''

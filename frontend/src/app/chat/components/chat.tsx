@@ -14,6 +14,8 @@ import Modal from '@shared/components/UI/Modal';
 import TextField from '@mui/material/TextField';
 import { useDashboard } from '@/hooks/useDashboard';
 import Autocomplete, { autocompleteClasses, createFilterOptions } from '@mui/material/Autocomplete';
+import { notify } from '@/utils/notification'
+
 
 interface CityOptionType {
   inputValue?: string;
@@ -105,7 +107,7 @@ const Chat = () => {
   
 
   const { messages, handleButtonClick, handleInputEnterPress,
-    handleBackClick, createReservation
+    handleBackClick, createReservation,removeMessage
   } = useChatHandler();
   const { getReservationListData } = useDashboard();
 
@@ -143,8 +145,12 @@ const Chat = () => {
     return givenDate > today;
   }
   const handleDateClick = async (info: DateClickArg) => {
+    if (!city?.name) {
+      notify('error', 'エラー', '都道府県を選択してください。');
+      return;
+    }
     setCheckDataResult(true);
-    const checkResult = await checkDate(info.dateStr);
+    const checkResult = await checkDate(info.dateStr, city.name);
     setCheckDataResult(checkResult.status)
     setSelectedDate(info.dateStr);
     setIsModalOpen(true);
@@ -469,7 +475,7 @@ const Chat = () => {
                 </div>
                 <div className="flex gap-6">
                   <Button label="はい" onClickHandler={() => {city?.name && handleInputEnterPress( city?.name || "","inputAddress")}} />
-                  <Button label="いいえ" onClickHandler={() => handleButtonClick("いいえ", message.reqType[0])} />
+                  <Button label="戻る" onClickHandler={() => removeMessage()} />
                 </div>
               </div>
             )}

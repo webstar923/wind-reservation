@@ -93,7 +93,6 @@ export const useDashboard = () => {
 
   // Get Work Data
   const getWorkData = async () => fetchData('/api/work/getAllData');
-
   // Get User Data
   const getUserData = async () => fetchData('/api/user/getAllData');
   const getMemberData = async () => fetchData('/api/user/memberData');
@@ -282,8 +281,6 @@ export const useDashboard = () => {
 
       const getChatHistory = async (id: number) => {
         try {
-          console.log(id);
-          
           const response = await fetch('/api/reservation/getChatHistoryByid', {
             method: 'POST',
             headers: {
@@ -342,14 +339,14 @@ export const useDashboard = () => {
           throw error;
         }
       };
-      const checkDate = async (date:string) => {
+      const checkDate = async (date:string,prefecture:string) => {
         try {
           const response = await fetch('/api/setting/checkDate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ date }), 
+            body: JSON.stringify({ date,prefecture }), 
           });          
                     
           return await response.json();

@@ -152,13 +152,8 @@ export const useChatHandler = () => {
       history:chatHistory,
       prefecture:prefecture
     };        
-    console.log(requirement);
-    console.log(reqType,date);
-    
     if (reqType === "reservate") {
       const req =requirement;
-      console.log(req);
-      
       if (req === "予約変更") { 
         console.log(requirement,date);
          
@@ -175,8 +170,6 @@ export const useChatHandler = () => {
           throw new Error(errorData.message || 'search failed');
         }
         const data = await res.json();
-        console.log(data);
-        
         const reservationConfirm = {
           type:"checkReservation",
           content:"予約が確定しました。以下の内容をご確認ください。",
@@ -184,7 +177,6 @@ export const useChatHandler = () => {
           state:"OK"
         }
           addMessage(reservationConfirm);
-
       }else{
                
         const res = await fetch('/api/reservation/createReservation', {
@@ -223,11 +215,9 @@ export const useChatHandler = () => {
             options:reservationData
           }
           addMessage(reservationConfirm);
-          
         }else{
           return addMessage(flowMap["getReservationError"]);        
         }
-       
       }else{
         const reservationConfirm = {
           type:"checkReservation",
@@ -239,9 +229,8 @@ export const useChatHandler = () => {
     }
   };
  
-
   const handleBackClick = () => {
     removeMessage();
   };
-  return { messages, handleButtonClick, handleInputEnterPress, handleBackClick, createReservation};
+  return { messages, handleButtonClick, handleInputEnterPress, handleBackClick, createReservation,removeMessage};
 };
