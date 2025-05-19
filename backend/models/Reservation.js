@@ -23,21 +23,17 @@ const Reservation = sequelize.define('Reservation', {
   },
   status: {
     type: DataTypes.STRING,
-    allowNull: false,
     defaultValue:'予約済み'
   },
   installation_type_id: {
     type: DataTypes.INTEGER,
-    allowNull:true,
     unique: false,
   },
   start_time:{
     type:DataTypes.TIME,
-    allowNull: false,
   },
   end_time:{
     type:DataTypes.TIME,
-    allowNull: false,
   },},
   { 
     timestamps: false,
