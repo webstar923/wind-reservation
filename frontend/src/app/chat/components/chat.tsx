@@ -146,7 +146,7 @@ const Chat = () => {
   }
   const handleDateClick = async (info: DateClickArg) => {
     if (!city?.name) {
-      notify('error', 'エラー', '都道府県を選択してください。');
+      notify('error', 'エラ', '都道府県を選択してください。');
       return;
     }
     setCheckDataResult(true);
