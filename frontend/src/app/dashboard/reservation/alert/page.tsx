@@ -192,7 +192,7 @@ const AlertManagementPage = () => {
             <table className="w-full #bg-[#233044] text-white rounded-lg overflow-hidden">
                 <thead>
                   <tr className="bg-[#667486]">
-                  {["番号","メッセージ", "状態", "区分","ユザーID","日時"].map((column) => (
+                  {["番号","メッセージ", "状態", "区分","ユーザーID","日時"].map((column) => (
                     <th
                       key={column}
                       className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider cursor-pointer"
