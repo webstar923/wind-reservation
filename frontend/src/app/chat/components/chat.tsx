@@ -144,15 +144,16 @@ const Chat = () => {
 
     return givenDate > today;
   }
-  const handleDateClick = async (info: DateClickArg) => {
+  const handleDateClick = async (info: string) => {
+       
     if (!city?.name) {
       notify('error', 'エラ', '都道府県を選択してください。');
       return;
     }
     setCheckDataResult(true);
-    const checkResult = await checkDate(info.dateStr, city.name);
+    const checkResult = await checkDate(info, city.name);
     setCheckDataResult(checkResult.status)
-    setSelectedDate(info.dateStr);
+    setSelectedDate(info);
     setIsModalOpen(true);
   };
   const handleCloseModal = () => {
@@ -289,7 +290,7 @@ const Chat = () => {
                     )}
                     events={changedData}
                     height="600px"
-                    dateClick={(info) => handleDateClick(info)}
+                    dateClick={(info) => handleDateClick(info.dateStr)}
                   />
                 </div>
 
@@ -299,7 +300,7 @@ const Chat = () => {
                     type="date"
                     // value={selectedEvent.reservation_time || "01/01/2001"}
                     onChange={(e) => {
-                      setSelectedDate(e.target.value);
+                      handleDateClick(e.target.value);
                       setIsModalOpen(true);
                     }}
                     variant="outlined"

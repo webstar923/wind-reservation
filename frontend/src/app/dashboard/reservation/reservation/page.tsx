@@ -158,7 +158,8 @@ const ReservationManagementPage = () => {
     if (String(selectedEvent?.id) !== "0") {
       // Update existing reservation
       if (selectedEvent && originalData) {
-        try {
+        try {        
+          
           await updateReservation(selectedEvent);
           // Update the list of reservations
           const updatedEvents = originalData.map((event: Event) =>
@@ -184,7 +185,7 @@ const ReservationManagementPage = () => {
       }
     } else {
       // Create new reservation
-      try {
+      try {               
         const newReservation = await createReservation(selectedEvent);
 
         if (newReservation) {

@@ -131,31 +131,38 @@ const findChangeDate = async (req, res) => {
 
 const updateReservation = async (req, res) => {
   try {
-    const { id, ...updateFields } = req.body; // id を分離し、更新対象のフィールドを取得
+    const { id, ...updateFields } = req.body;
+   
 
     const reservation = await Reservation.findByPk(Number(id));
-
     if (!reservation) {
       return res.status(404).json({ message: 'Reservation not found' });
     }
 
-    // null ではないプロパティのみを更新
+    // Convert ISO datetime strings to MySQL DATETIME format
+    ['start_time', 'end_time'].forEach((field) => {
+      if (updateFields[field]) {
+        const date = new Date(updateFields[field]);
+        updateFields[field] = date.toISOString().slice(0, 19).replace('T', ' ');
+      }
+    });
+
     const filteredFields = Object.fromEntries(
       Object.entries(updateFields).filter(([_, value]) => value !== null && value !== undefined)
     );
 
     if (Object.keys(filteredFields).length === 0) {
       return res.status(400).json({ message: 'No valid fields to update' });
-    }
+    }   
 
     const updatedReservation = await reservation.update(filteredFields);
-
     return res.status(200).json(updatedReservation);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 const findWork = async (req, res) => {
   
@@ -241,8 +248,6 @@ function __getDatesBetween(startTime, endTime) {
   return dates;
 }
 const createReservation = async (req, res) => {  
-  console.log("aaaaaaaaaaa",req.body);
-  
   try {
     const {customer_address,start_time,customer_name,customer_phoneNum,prefecture, history} = req.body; 
     
