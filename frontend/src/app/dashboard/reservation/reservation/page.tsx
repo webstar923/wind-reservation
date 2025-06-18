@@ -17,6 +17,22 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import DashboardLayout from '@/app/layout/DashboardLayout';
 import Autocomplete, { autocompleteClasses, createFilterOptions } from '@mui/material/Autocomplete';
+import Button from '@mui/material/Button';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 interface Event {
   customer_address: string,
   customer_name: string,
@@ -28,7 +44,8 @@ interface Event {
   status: string,
   worker_id: number,
   prefecture: string,
-  company: string
+  company: string,
+  pdf_url?: string
 }
 
 
@@ -42,7 +59,7 @@ interface ChatHistory {
 }
 
 const ReservationManagementPage = () => {
-  const { getReservationListData, updateReservation, deleteReservation, createReservation, getAvailableCompanies,getChatHistory } = useDashboard();
+  const { getReservationListData, updateReservation, deleteReservation, createReservation, getAvailableCompanies, getChatHistory, uploadPdf } = useDashboard();
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [moreModalOpen, setMoreModalOpen] = useState(false);
@@ -55,6 +72,9 @@ const ReservationManagementPage = () => {
   const [companies, setCompanies] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [chatHistories, setChatHistories] = useState<ChatHistory[]>([]);
+  const [uploadedFilePath, setUploadedFilePath] = useState<string | null>(null);
+  const [realUploadedFilePath, setRealUploadedFilePath] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 
   const currencies = [
@@ -126,7 +146,7 @@ const ReservationManagementPage = () => {
     { "name": "鹿児島県" },
     { "name": "沖縄県" }
   ];
-  const handleMore = async (id:number) => {
+  const handleMore = async (id: number) => {
 
     const data = await getChatHistory(id);
 
@@ -137,13 +157,15 @@ const ReservationManagementPage = () => {
     setChatHistories(chatHistoryArray);
     setMoreModalOpen(true);
   };
-
   const handleEventClick = async (clickInfo: EventClickArg) => {
     if (originalData && Array.isArray(originalData)) {
       const selectedEvent = originalData.find(
         (event: Event) => String(event.id) === clickInfo.event._def.publicId
       );
       if (selectedEvent) {
+        setRealUploadedFilePath(selectedEvent?.pdf_url || "");
+        const fileName = selectedEvent?.pdf_url?.split('/').pop() || '';
+        setUploadedFilePath(fileName);
         setSelectedEvent(selectedEvent);
         const data = await getAvailableCompanies(selectedEvent.prefecture, selectedEvent.id);
         setCompanies(data);
@@ -154,62 +176,70 @@ const ReservationManagementPage = () => {
     setModalOpen(true);
   };
   const handleSave = async () => {
-
-    if (String(selectedEvent?.id) !== "0") {
-      // Update existing reservation
-      if (selectedEvent && originalData) {
-        try {        
-          
-          await updateReservation(selectedEvent);
-          // Update the list of reservations
-          const updatedEvents = originalData.map((event: Event) =>
-            event.id === selectedEvent.id ? selectedEvent : event
-          );
-
-          setOriginalData(updatedEvents);
-          setChangedData(
-            updatedEvents.map((reservation: Event) => ({
-              id: String(reservation.id),
-              title: `予約番号${reservation.id}`,
-              date: new Date(reservation.start_time).toISOString().split("T")[0],
-            }))
-          );
-          notify('success', '成功!', '予約が成果的に行われました!');
-        } catch {
-          notify('error', '失敗!', '予約追加に失敗しました!');
-        }
-
-        setModalOpen(false);
-      } else {
-        console.error("originalData is null or undefined.");
+    if (!selectedEvent) return;
+  
+    try {
+      let pdfUrl = selectedEvent.pdf_url;
+  
+      // 🔽 Upload PDF if file is selected
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("reservationId", String(selectedEvent.id));
+  
+        const response = await uploadPdf(formData);
+        pdfUrl = response.pdfUrl;
       }
-    } else {
-      // Create new reservation
-      try {               
-        const newReservation = await createReservation(selectedEvent);
-
+  
+      const updatedEventWithPdf = {
+        ...selectedEvent,
+        pdf_url: pdfUrl,
+      };
+      setRealUploadedFilePath(pdfUrl || null);
+  
+      if (String(selectedEvent.id) !== "0") {
+        // ✅ Update existing reservation
+        await updateReservation(updatedEventWithPdf);
+        console.log("00000",updatedEventWithPdf);
+        
+  
+        const updatedEvents = originalData.map((event: Event) =>
+          event.id === selectedEvent.id ? updatedEventWithPdf : event
+        );
+  
+        setOriginalData(updatedEvents);
+        setChangedData(
+          updatedEvents.map((reservation: Event) => ({
+            id: String(reservation.id),
+            title: `予約番号${reservation.id}`,
+            date: new Date(reservation.start_time).toISOString().split("T")[0],
+          }))
+        );
+  
+        notify("success", "成功!", "予約が成果的に更新されました!");
+      } else {        
+        const newReservation = await createReservation(updatedEventWithPdf);  
         if (newReservation) {
-          // Add new reservation to state
           const updatedOriginalData = [...originalData, newReservation];
-          setOriginalData(updatedOriginalData);
-
+          setOriginalData(updatedOriginalData);  
           setChangedData([
-            ...(changedData ?? []), // If changedData is undefined, fallback to an empty array
+            ...(changedData ?? []),
             {
               id: newReservation.id,
               title: `予約番号${newReservation.id}-${newReservation.work_name}`,
               date: new Date(newReservation.start_time).toISOString().split("T")[0],
             },
           ]);
-
-
         }
-        setModalOpen(false);
-      } catch (error) {
-        console.error("Error creating reservation:", error);
-      }
+      }  
+      setModalOpen(false);
+      setSelectedFile(null); // reset file
+    } catch (error) {
+      console.error("Error saving reservation:", error);
+      notify("error", "失敗!", "予約の保存に失敗しました。");
     }
   };
+  
 
   const handleDatesSet = async ({ start, end }: { start: Date; end: Date }) => {
     const startDate = start.toISOString();
@@ -274,23 +304,7 @@ const ReservationManagementPage = () => {
     };
     fetchData();
   }, []);
-  const handleNewReservation = () => {
-    const now = new Date().toISOString();
-    setSelectedEvent({
-      id: 0,
-      customer_name: '',
-      customer_address: '',
-      customer_phoneNum: '',
-      start_time: now,
-      end_time: now,
-      installation_type_id: 1,
-      status: '予約済み',
-      worker_id: 1,
-      prefecture: '',
-      company: ''
-    });
-    setModalOpen(true);
-  };
+
 
 
   return (
@@ -473,10 +487,50 @@ const ReservationManagementPage = () => {
                           variant="outlined"
                           className="w-full p-2 border border-gray-300 rounded"
                         />
+                        <div className='flex gap-5'>
+                          <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            // onClick={handleUpload}
+                            startIcon={<CloudUploadIcon />}
+                          >
+                            PDFアップロード
+                            <VisuallyHiddenInput
+                              type="file"
+                              accept=".pdf"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                console.log(file);
+
+                                setUploadedFilePath(file?.name || null);
+                                if (file) setSelectedFile(file);
+                              }}
+                              multiple
+                              className="mt-2"
+                            />
+                          </Button>
+                          {uploadedFilePath && (
+                            <div className="mt-2 text-sm text-blue-700 underline">
+                              <a href={realUploadedFilePath || ""} target="_blank" rel="noopener noreferrer">
+                                {uploadedFilePath}
+                              </a>
+                            </div>
+                          )}
+
+                        </div>
                       </div>
                       <div className="flex justify-end mt-4 space-x-2">
 
-
+                        {selectedEvent.id !== 0 ? (
+                          <button
+                            onClick={() => { handleMore(selectedEvent.id) }}
+                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                          >
+                            もっと見る
+                          </button>
+                        ) : null}
                         <button
                           onClick={handleSave}
                           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -498,14 +552,7 @@ const ReservationManagementPage = () => {
                         >
                           取消
                         </button>
-                        {selectedEvent.id !== 0 ? (
-                          <button
-                            onClick={()=>{handleMore(selectedEvent.id)}}
-                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
-                          >
-                            もっと見る
-                          </button>
-                        ) : null}
+
                       </div>
                     </div>
                   </div>

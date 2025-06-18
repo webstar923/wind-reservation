@@ -99,10 +99,10 @@ const Sidebar = () => {
           <>
             <li
               key={`${path}-company2`}
-              className={`w-full text-white mt-0 ${pathname === "/dashboard/reservation/alert" ? 'bg-[#1e293a] text-white' : ''} 
+              className={`w-full text-white mt-0 ${pathname === "/dashboard/reservation/notification" ? 'bg-[#1e293a] text-white' : ''} 
               ${isMobile ? 'flex justify-center' : ''} p-3 hover:bg-[#1e293a] text-red-500 transition-all duration-100`}
               style={{ marginTop: "0px" }}
-              onClick={(e) => linkOnclick(e, "/dashboard/reservation/alert")}
+              onClick={(e) => linkOnclick(e, "/dashboard/reservation/notification")}
 
             >
               <div className="flex items-center">

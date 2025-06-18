@@ -155,8 +155,6 @@ export const useChatHandler = () => {
     if (reqType === "reservate") {
       const req =requirement;
       if (req === "予約変更") { 
-        console.log(requirement,date);
-         
         const id = chatHistory.find(item => item.key === "reservationId")?.value;
         const start_time = reservationData.start_time;
         
@@ -164,7 +162,8 @@ export const useChatHandler = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json'},
           body: JSON.stringify({id,start_time}),
-        });
+        });        
+        
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || 'search failed');
@@ -184,6 +183,7 @@ export const useChatHandler = () => {
           headers: { 'Content-Type': 'application/json'},
           body: JSON.stringify(reservationData),
         });
+        
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || 'search failed');

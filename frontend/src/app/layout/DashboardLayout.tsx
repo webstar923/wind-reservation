@@ -43,7 +43,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </div>
             {NotificationNum.userRole === "manager" && (
               <div className="relative cursor-pointer hover:bg-[#525252] rounded-[5px]">
-                <Link href="/dashboard/notification" className="flex items-center">
+                <Link href="/dashboard/reservation/notification" className="flex items-center">
                   <BellIcon className="w-[40px] h-[40px]" />
                   {NotificationNum.Notification_Num !== 0 && (
                     <div className="absolute rounded-[5px] bg-[#b92626] bottom-[-6px] right-[0px] text-white px-1.5 py-[2px] border-[1px] border-[#f2f2f2]">

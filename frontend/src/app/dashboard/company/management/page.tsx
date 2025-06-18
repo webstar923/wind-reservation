@@ -567,7 +567,7 @@ const CompanyManagementPage = () => {
             <table className="w-full bg-[#233044] text-white rounded-lg overflow-hidden p-3">
               <thead>
                 <tr className="bg-[#667486]">
-                  {["番号", "会社名", "代表者名", "メールアドレス", "住所", "対応可能件数", "都道府県", "市区町村"].map((column) => (
+                  {["番号", "会社名", "代表者名", "メールアドレス", "住所", "対応可能件数", "都道府県"].map((column) => (
                     <th
                       key={column}
                       className="px-6 py-3 text-left text-[15px] font-medium uppercase tracking-wider cursor-pointer"
@@ -595,7 +595,7 @@ const CompanyManagementPage = () => {
                     <td className="pl-4 py-3 whitespace-nowrap">{company.address}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{company.available_rv_num}</td>
                     <td className="pl-4 py-3 whitespace-nowrap">{company.available_prefecture}</td>
-                    <td className="pl-4 py-3 ">{company.available_cities}</td>
+                    {/* <td className="pl-4 py-3 ">{company.available_cities}</td> */}
                     <td className=" py-3 pr-1 ">
                       <div className="flex justify-center items-center gap-2 text-[12px] w-full h-full whitespace-nowrap">
                         <button onClick={() => openModal(company, 'edit')} className="bg-blue-500 hover:bg-blue-700 px-2 py-1 rounded">編集</button>

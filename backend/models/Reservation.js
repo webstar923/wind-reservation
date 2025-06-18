@@ -21,6 +21,9 @@ const Reservation = sequelize.define('Reservation', {
   company:{
     type:DataTypes.STRING,
   },
+  pdf_url:{
+    type:DataTypes.STRING,
+  },
   status: {
     type: DataTypes.STRING,
     defaultValue:'予約済み'

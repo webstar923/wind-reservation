@@ -376,6 +376,23 @@ export const useDashboard = () => {
         method: 'POST',
         body: JSON.stringify({prefecture,id}),
       });
+
+      const uploadPdf = async (body: FormData) => {
+        const res = await fetch('/api/reservation/uploadPdf', {
+          method: 'POST',
+          body,
+        });
+      
+        if (!res.ok) {
+          const error = await res.text();
+          throw new Error(`Upload failed: ${error}`);
+        }
+      
+        const data = await res.json(); // ← parse JSON
+        return data; // ← return the full response
+      };
+      
+      
   return {   
     getUserData,
     changeUser,
@@ -422,7 +439,8 @@ export const useDashboard = () => {
     updateCompany,
     deleteCompany,
 
-    getAvailableCompanies
+    getAvailableCompanies,
+    uploadPdf,
 
   };
 };

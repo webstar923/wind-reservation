@@ -1,4 +1,13 @@
 const express = require('express');
+require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
+const cors = require('cors');
+const http = require('http');
+const { Server } = require('socket.io');
+const { v4: uuidv4 } = require('uuid');
+
 const sequelize = require('./config');
 const authRoutes = require('./routes/authRoutes');
 const reservationRoutes = require('./routes/reservationRoutes');
@@ -8,111 +17,125 @@ const alertRoutes = require('./routes/alertRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const settingRoutes = require('./routes/settingRoutes');
 const companyRoutes = require('./routes/companyRoutes');
-
-
-require('dotenv').config();
-
-const PORT = process.env.PORT || 5001;
-const { authenticate, authorizeRole } = require('./middleware/authMiddleware'); // Correct import
-const { v4: uuidv4 } = require('uuid');
-
-const http = require("http");
-const { Server } = require("socket.io");
-
-
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
+const { authenticate } = require('./middleware/authMiddleware');
 const { processExcel } = require('./excelService');
+
+// Create app and server
 const app = express();
-
-
-
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "http://localhost:3000" }, // Next.jsと通信
+  cors: { origin: 'http://localhost:3000' },
 });
 
+// Middleware
 app.use(cors());
 app.use(express.json());
-const users = {}; // { userId: socketId }
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+app.use((req, res, next) => {
+  req.id = uuidv4();
+  next();
+});
 
-  // ユーザーを登録（ユーザーIDとSocket IDを紐付け）
-  socket.on("register", (userId) => {
+// Socket.io setup
+const users = {};
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  socket.on('register', (userId) => {
     users[userId] = socket.id;
     console.log(`User ${userId} registered with socket ID ${socket.id}`);
   });
 
-  // 個別のユーザーに通知
-  socket.on("sendNotificationToUser", ({ userId, message }) => {
+  socket.on('sendNotificationToUser', ({ userId, message }) => {
     const socketId = users[userId];
     if (socketId) {
-      io.to(socketId).emit("notification", { message });
+      io.to(socketId).emit('notification', { message });
     }
   });
 
-  // 全員に通知
-  socket.on("sendNotificationToAll", (message) => {
-    io.emit("notification", { message });
+  socket.on('sendNotificationToAll', (message) => {
+    io.emit('notification', { message });
   });
 
-  // 切断時にユーザー情報を削除
-  socket.on("disconnect", () => {
+  socket.on('disconnect', () => {
     const userId = Object.keys(users).find((key) => users[key] === socket.id);
     if (userId) delete users[userId];
     console.log(`User ${userId} disconnected`);
   });
 });
-// Multer for file uploads
+
+// Create uploads folder if missing
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadDir)); // Serve uploads statically
+
+// Multer config
 const storage = multer.diskStorage({
-  destination: './uploads',
+  destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-
-const upload = multer({ storage });
-app.post('/upload', upload.single('file'), async (req, res) => {  
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
+    const baseName = path.basename(file.originalname, path.extname(file.originalname)); // without extension
+    const extension = path.extname(file.originalname); // .pdf, etc.
+    
+    const date = new Date().toISOString().split('T')[0].replace(/-/g, ''); // e.g., 20250618
+    const finalName = `${baseName}_${date}${extension}`;
+    
+    cb(null, finalName);
   }
+});
+const upload = multer({ storage });
+
+// Excel upload route
+app.post('/upload', upload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
   try {
     const data = await processExcel(req.file.path);
-    return res.json({ message: 'File processed successfully', data });
+    res.json({ message: 'File processed successfully', data });
   } catch (error) {
     res.status(500).json({ message: 'Error processing file', error });
   }
 });
 
-app.use((req, res, next) => {
-  req.id = uuidv4(); // Generate a unique request ID
-  next();
+// ✅ PDF upload route
+app.post('/uploadPdf', upload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+
+  const ext = path.extname(req.file.originalname).toLowerCase();
+  if (ext !== '.pdf') {
+    return res.status(400).json({ message: 'Only PDF files are allowed' });
+  }
+
+  try {
+    const pdfUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    res.json({
+      message: 'PDF uploaded successfully',
+      pdfUrl: pdfUrl,
+      ok:true
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing PDF', error });
+  }
 });
- 
-app.use(express.json());
 
-
+// Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/reservation',reservationRoutes);
+app.use('/api/reservation', reservationRoutes);
 app.use('/api/user', authenticate, userRoutes);
-app.use('/api/log',  authenticate, logRoutes);
-app.use('/api/alert',authenticate, alertRoutes);
+app.use('/api/log', authenticate, logRoutes);
+app.use('/api/alert', authenticate, alertRoutes);
 app.use('/api/chat', chatRoutes);
-app.use('/api/setting',settingRoutes);
-app.use('/api/company',authenticate,companyRoutes);
+app.use('/api/setting', settingRoutes);
+app.use('/api/company', authenticate, companyRoutes);
 
-
+// Start server
 sequelize.sync()
   .then(() => {
     console.log('Database connected');
-    app.listen(PORT, () => {
-      console.log('Server running on port '+PORT);
+    server.listen(process.env.PORT || 5001, () => {
+      console.log(`Server running on port ${process.env.PORT || 5001}`);
     });
   })
-  .catch(err => {
+  .catch((err) => {
     console.error('Error connecting to the database:', err);
   });

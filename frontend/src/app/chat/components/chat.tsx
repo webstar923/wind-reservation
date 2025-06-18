@@ -229,7 +229,7 @@ const Chat = () => {
                 ))}
                 {index + 1 === messages.length && messages.length !== 1 &&
                   <div
-                    className={`border border-[#f88888] ml-10 px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4141] text-[#ff3333] hover:bg-[#ffeaea] cursor-pointer bg-[#FFFFFF]1`}
+                    className={`border border-[#f88888] ml-1 px-[20px] py-[10px] rounded-[5px] hover:border-[#ff4c4c] text-[#ff3333] hover:bg-[#f7dbdb] cursor-pointer bg-[#FFFFFF]`}
                     onClick={() => backBtn()}
                   >
                     <p className="font-normal leading-[28px]  text-[15px] break-all text-center">戻る</p>
