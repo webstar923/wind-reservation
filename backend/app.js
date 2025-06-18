@@ -19,7 +19,10 @@ const settingRoutes = require('./routes/settingRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const { authenticate } = require('./middleware/authMiddleware');
 const { processExcel } = require('./excelService');
-
+const sanitizeFilename = (name) => {
+  // Removes problematic characters except Japanese and common filename-safe chars
+  return name.replace(/[<>:"/\\|?*\x00-\x1F]/g, '').trim();
+};
 // Create app and server
 const app = express();
 const server = http.createServer(app);
@@ -74,12 +77,15 @@ app.use('/uploads', express.static(uploadDir)); // Serve uploads statically
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
-    const baseName = path.basename(file.originalname, path.extname(file.originalname)); // without extension
-    const extension = path.extname(file.originalname); // .pdf, etc.
-    
-    const date = new Date().toISOString().split('T')[0].replace(/-/g, ''); // e.g., 20250618
+    const originalName = file.originalname;
+    const extension = path.extname(originalName);
+    const baseName = sanitizeFilename(path.basename(originalName, extension));
+
+    const date = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    const uniqueId = uuidv4().slice(0, 8); // shorter UUID
+
     const finalName = `${baseName}_${date}${extension}`;
-    
+
     cb(null, finalName);
   }
 });
@@ -107,7 +113,7 @@ app.post('/uploadPdf', upload.single('file'), async (req, res) => {
   }
 
   try {
-    const pdfUrl = `weing.ai-reserve.jp/uploads/${req.file.filename}`;
+    const pdfUrl = `uploads/${req.file.filename}`;
     res.json({
       message: 'PDF uploaded successfully',
       pdfUrl: pdfUrl,
