@@ -107,7 +107,7 @@ app.post('/uploadPdf', upload.single('file'), async (req, res) => {
   }
 
   try {
-    const pdfUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const pdfUrl = `weing.ai-reserve.jp/uploads/${req.file.filename}`;
     res.json({
       message: 'PDF uploaded successfully',
       pdfUrl: pdfUrl,
