@@ -513,7 +513,7 @@ const ReservationManagementPage = () => {
                           </Button>
                           {uploadedFilePath && (
                             <div className="mt-2 text-sm text-blue-700 underline">
-                              <a href={realUploadedFilePath || ""} target="_blank" rel="noopener noreferrer">
+                              <a href={"/"+realUploadedFilePath || ""} target="_blank" rel="noopener noreferrer">
                                 {uploadedFilePath}
                               </a>
                             </div>
