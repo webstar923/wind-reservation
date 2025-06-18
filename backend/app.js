@@ -77,7 +77,7 @@ app.use('/uploads', express.static(uploadDir)); // Serve uploads statically
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
-    const originalName = file.originalname;
+    const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
     const extension = path.extname(originalName);
     const baseName = sanitizeFilename(path.basename(originalName, extension));
 
