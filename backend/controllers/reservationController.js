@@ -247,6 +247,43 @@ function __getDatesBetween(startTime, endTime) {
   }
   return dates;
 }
+
+const api_createReservation = async (req, res, next) => {
+  try {
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({ message: "Invalid JSON body" });
+    }
+
+    const { start_time, customer_name, prefecture } = req.body;
+
+    if (!customer_name ) {
+      return res.status(400).json({"error":"customerName は必須です"});
+    }
+    if (!prefecture) {
+      return res.status(400).json({"error":"prefecture は必須です"});
+    }
+    if (!start_time) {
+      return res.status(400).json({"error":"start_time は必須です"});
+    }
+
+    const newReservation = await Reservation.create({
+      ...req.body,
+    });
+    return res.status(201).json({
+      id: newReservation.id,
+      message: "予約が登録されました。",
+    });
+  } catch (err) {
+    console.error(err);
+
+    // If something already sent headers, don't try to send again
+    if (res.headersSent) {
+      return next ? next(err) : undefined;
+    }
+    return res.status(500).json({"error":"サーバ内部エラー"});
+  }
+};
+
 const createReservation = async (req, res) => {  
   try {
     const {customer_address,start_time,customer_name,customer_phoneNum,prefecture, history} = req.body; 
@@ -557,11 +594,49 @@ const getSettingData = async (req, res) => {
     res.status(500).json({ message: 'サーバーエラー' });
   }
 };
+const api_updateReservation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { ...updateFields } = req.body;
+   
+    console.log("---------------------",id);
+    
+    const reservation = await Reservation.findByPk(Number(id));
+    if (!reservation) {
+      return res.status(404).json({"error":"id がパスと一致しません"});
+    }
+
+    // Convert ISO datetime strings to MySQL DATETIME format
+    ['start_time', 'end_time'].forEach((field) => {
+      if (updateFields[field]) {
+        const date = new Date(updateFields[field]);
+        updateFields[field] = date.toISOString().slice(0, 19).replace('T', ' ');
+      }
+    });
+
+    const filteredFields = Object.fromEntries(
+      Object.entries(updateFields).filter(([_, value]) => value !== null && value !== undefined)
+    );
+
+    if (Object.keys(filteredFields).length === 0) {
+      return res.status(400).json({"error":"更新するフィールドがありません"});
+    }   
+
+    const updatedReservation = await reservation.update(filteredFields);
+    return res.status(200).json({
+      id: updatedReservation.id,
+      message: "予約が更新されました"
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({"error":"サーバ内部エラー"});
+  }
+};
 module.exports = { 
   findFlat, findWork, findReservation, findChangeDate, 
   updateReservation,  getChangeableDate, createReservation,
    getReservations,getReservationListData,deleteReservation, 
    getDashboardData,   getAllReservationData, getAvailableDate,
-   getFutureReservationData,getChatHistoryByid,getSettingData
+   getFutureReservationData,getChatHistoryByid,getSettingData,api_createReservation,api_updateReservation
   
   };

@@ -23,6 +23,7 @@ const Reservation = sequelize.define('Reservation', {
   },
   pdf_url:{
     type:DataTypes.STRING,
+    allowNull: true,
   },
   status: {
     type: DataTypes.STRING,

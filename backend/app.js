@@ -133,6 +133,7 @@ app.use('/api/alert', authenticate, alertRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/setting', settingRoutes);
 app.use('/api/company', authenticate, companyRoutes);
+app.use('/api/v1/reservations', authenticate, reservationRoutes);
 
 // Start server
 sequelize.sync()

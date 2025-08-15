@@ -4,15 +4,15 @@ const {
         updateReservation, getChangeableDate, createReservation,
         getReservations,getReservationListData,deleteReservation
         ,getDashboardData,getAvailableDate,getAllReservationData,
-        getFutureReservationData,getChatHistoryByid,getSettingData
+        getFutureReservationData,getChatHistoryByid,getSettingData,api_createReservation,api_updateReservation
      } = require('../controllers/reservationController');
 
 const router = express.Router();
 
 // search Flat name
-
+router.post('/', api_createReservation);
+router.put('/:id',api_updateReservation)
 router.post('/getAvailableDate',getAvailableDate);
-
 router.post('/findFlat',findFlat);
 router.post('/findWork',findWork);
 router.post('/findReservation',findReservation);
