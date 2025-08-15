@@ -1,55 +1,38 @@
+require('dotenv').config();              // 1) load env first
 const jwt = require('jwt-simple');
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key'; // Use environment variable for production
-require('dotenv').config();
 
-// Middleware to authenticate user based on JWT token
+const JWT_SECRET = process.env.JWT_SECRET;   // no fallback in prod
+const API_KEY    = process.env.API_KEY || 'test';
+
+// Middleware to authenticate
 const authenticate = (req, res, next) => {
-  const authHeader = req.headers['authorization']; // Get Authorization header
-  const API_KEY = process.env.API_KEY || "test";  
-  const apiKey = req.headers['x-api-key'];
   try {
-  if (apiKey === API_KEY) {
-    next();
-  }else{
-    let token = null;
-    if (authHeader && authHeader.startsWith("Bearer")) {
-      token = authHeader.substring(6).trim();
-    }
-  
-    if (!token) {
-      return res.status(403).json({ message: 'Access denied' });
-    }
-  
- 
+    // Allow x-api-key shortcut
+    if (req.headers['x-api-key'] === API_KEY) return next();
 
-  
-    // Use jwt.decode() to validate and decode the token
-    const decoded = jwt.decode(token, JWT_SECRET); // jwt.verify(token, JWT_SECRET) is preferred
-    req.user = decoded;    
-    next();
-  }
+    const auth = req.headers.authorization || '';
+    const [scheme, token] = auth.split(' ');
+
+    if (scheme !== 'Bearer' || !token) {
+      return res.status(401).json({ message: 'Access denied: missing Bearer token' });
+    }
+
+    const decoded = jwt.decode(token, JWT_SECRET); // with jwt-simple, this won’t check exp
+    req.user = decoded;
+    return next();
   } catch (err) {
-    return res.status(400).json({ message: 'Invalid token', error: err.message });
+    return res.status(401).json({ message: 'Invalid token', error: err.message });
   }
 };
 
-// Middleware to check user role based on the required role(s)
-const authorizeRole = (...requiredRoles) => {
-  return (req, res, next) => {
-    // Assuming the role is stored in `req.user.role` after decoding the JWT
-    const userRole = req.user?.role;
-    console.log("this is userROle:",userRole);
-    
-    if (!userRole) {
-      return res.status(403).json({ message: 'Access denied: No role found' });
-    }
-
-    if (!requiredRoles.includes(userRole)) {
-      return res.status(403).json({ message: 'Access denied: Insufficient permissions' });
-    }
-
-    next();
-  };
+// Role guard
+const authorizeRole = (...requiredRoles) => (req, res, next) => {
+  const role = req.user?.role;
+  if (!role) return res.status(403).json({ message: 'Access denied: no role' });
+  if (!requiredRoles.includes(role)) {
+    return res.status(403).json({ message: 'Access denied: insufficient permissions' });
+  }
+  return next();
 };
 
 module.exports = { authenticate, authorizeRole };
